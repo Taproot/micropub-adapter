@@ -1,0 +1,14 @@
+{
+    "name": "taproot/micropub-adapter",
+    "description": "The easiest way to add micropub support to existing or new applications.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Barnaby Walters",
+            "email": "barnaby@waterpigs.co.uk"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}

@@ -9,11 +9,16 @@
             "email": "barnaby@waterpigs.co.uk"
         }
     ],
+    "autoload": {
+        "files": [
+            "src/MicropubAdapter.php"
+        ]
+    },
     "minimum-stability": "dev",
     "require": {
         "psr/http-message": "~1.0"
     },
     "require-dev": {
-        
+        "phpunit/phpunit": "^9"
     }
 }

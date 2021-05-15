@@ -151,27 +151,6 @@ abstract class MicropubAdapter {
 	}
 
 	/**
-	 * Unknown Query Callback
-	 * 
-	 * This method handles GET requests which have a q parameter which isn’t handled
-	 * by MicropubAdapter. By default it returns an HTTP 400 invalid_request error,
-	 * but you can override it to add additional functionality to your micropub
-	 * endpoint.
-	 * 
-	 * @param array $params The unaltered query parameters from the request.
-	 * @return string|array|ResponseInterface Return either a micropub error string, an array which will be turned into a JSON response, or a ready-made ResponseInterface.
-	 * @api 
-	 */
-	public function unknownQueryCallback(array $params) {
-		// Default response: not implemented.
-		$this->getLogger()->info('Handling unknown query with not_implemented response.', $params);
-		return $this->shortCircuit([
-			'error' => 'invalid_request',
-			'error_description' => $this->errorMessages['not_implemented']
-		]);
-	}
-
-	/**
 	 * Unknown GET Callback
 	 * 
 	 * This method handles GET requests without a q parameter, with no defined purpose.
@@ -466,13 +445,9 @@ abstract class MicropubAdapter {
 						return new Response(200, ['content-type' => 'application/json'], '{}');
 					}
 				}
-
-				// ?q parameter was provided but not recognised, delegate to query extension callback.
-				// Logged within the method.
-				return $this->shortCircuit($this->unknownQueryCallback($q));
 			}
 
-			// The GET request had no ?q param.
+			// The GET request had no ?q param, or the query is unknown.
 			// Logged within the method.
 			return $this->shortCircuit($this->unknownGetCallback($request));
 		} elseif (strtolower($request->getMethod()) == 'post') {
@@ -690,7 +665,7 @@ function normalizeUrlencodedCreateRequest(array $body) {
 		if ($key == 'h') {
 			$result['type'] = ["h-$value"];
 		} elseif (is_array($result)) {
-			$result['properties'][$key] = $result;
+			$result['properties'][rtrim($key, '[]')] = $result;
 		} else {
 			$result['properties'][$key] = [$result];
 		}

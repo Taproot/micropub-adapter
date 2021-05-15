@@ -87,8 +87,8 @@
 
 <dl class="phpdocumentor-table-of-contents">
     
-            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Taproot-Micropub-Config.html"><abbr title="\Taproot\Micropub\Config">Config</abbr></a></dt>
-        <dd>Config</dd>
+            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Taproot-Micropub-MicropubAdapter.html"><abbr title="\Taproot\Micropub\MicropubAdapter">MicropubAdapter</abbr></a></dt>
+        <dd>Abstract Micropub Adapter Superclass</dd>
     
     </dl>
 
@@ -99,17 +99,62 @@
 </h3>
 
 <dl class="phpdocumentor-table-of-contents">
-                        <dt class="phpdocumentor-table-of-contents__entry -function -">
-    <a href="namespaces/taproot-micropub.html#function_handleRequest">handleRequest()</a>
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a href="namespaces/taproot-micropub.html#constant_MICROPUB_ERROR_CODES">MICROPUB_ERROR_CODES</a>
     <span>
-                        &nbsp;: mixed    </span>
+        &nbsp;= [&#039;invalid_request&#039;, &#039;unauthorized&#039;, &#039;insufficient_scope&#039;, &#039;forbidden&#039;]                    </span>
 </dt>
-<dd>Handle Request</dd>
+<dd></dd>
+
+                        <dt class="phpdocumentor-table-of-contents__entry -function -">
+    <a href="namespaces/taproot-micropub.html#function_getAccessToken">getAccessToken()</a>
+    <span>
+                        &nbsp;: string|null    </span>
+</dt>
+<dd>Get Access Token</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -function -">
+    <a href="namespaces/taproot-micropub.html#function_normalizeUrlencodedCreateRequest">normalizeUrlencodedCreateRequest()</a>
+    <span>
+                        &nbsp;: array&lt;string|int, mixed&gt;    </span>
+</dt>
+<dd>Normalize URL-encoded Create Request</dd>
 
     </dl>
 
 
         
+    <section class="phpdocumentor-constants">
+        <h3 class="phpdocumentor-elements__header" id="constants">
+            Constants
+            <a href="files/src-micropubadapter.html#constants" class="headerlink"><i class="fas fa-link"></i></a>
+        </h3>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_MICROPUB_ERROR_CODES">
+        MICROPUB_ERROR_CODES
+        <a href="namespaces/taproot-micropub.html#constant_MICROPUB_ERROR_CODES" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">13</span>
+</aside>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+    <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">MICROPUB_ERROR_CODES</span>
+    = <span class="phpdocumentor-signature__default-value">[&#039;invalid_request&#039;, &#039;unauthorized&#039;, &#039;insufficient_scope&#039;, &#039;forbidden&#039;]</span>
+</code>
+
+
+    
+    
+
+</article>
+            </section>
 
             <section class="phpdocumentor-functions">
         <h3 class="phpdocumentor-elements__header" id="functions">
@@ -117,39 +162,66 @@
             <a href="files/src-micropubadapter.html#functions" class="headerlink"><i class="fas fa-link"></i></a>
         </h3>
                     <article class="phpdocumentor-element -function - ">
-    <h4 class="phpdocumentor-element__name" id="function_handleRequest">
-        handleRequest()
-        <a href="namespaces/taproot-micropub.html#function_handleRequest" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="function_getAccessToken">
+        getAccessToken()
+        <a href="namespaces/taproot-micropub.html#function_getAccessToken" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">27</span>
+    <span class="phpdocumentor-element-found-in__line">657</span>
 </aside>
 
-        <p class="phpdocumentor-summary">Handle Request</p>
+        <p class="phpdocumentor-summary">Get Access Token</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility"></span>
-                <span class="phpdocumentor-signature__name">handleRequest</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\Psr\Http\Message\RequestInterface">RequestInterface</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/Taproot-Micropub-Config.html"><abbr title="\Taproot\Micropub\Config">Config</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$config</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                <span class="phpdocumentor-signature__name">getAccessToken</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\Psr\Http\Message\ServerRequestInterface">ServerRequestInterface</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string|null</span></code>
 
-        <section class="phpdocumentor-description"><p>Handle an incoming request to a webmention endpoint, dispatching it to the appropriate
-callback defined in the $config parameter.</p>
+        <section class="phpdocumentor-description"><p>Given a request, return the Micropub access token, or null.</p>
 </section>
 
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$request</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\Psr\Http\Message\RequestInterface">RequestInterface</abbr></span>
+                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\Psr\Http\Message\ServerRequestInterface">ServerRequestInterface</abbr></span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
+            </dl>
+
+    
+
+    
+</article>
+                    <article class="phpdocumentor-element -function - ">
+    <h4 class="phpdocumentor-element__name" id="function_normalizeUrlencodedCreateRequest">
+        normalizeUrlencodedCreateRequest()
+        <a href="namespaces/taproot-micropub.html#function_normalizeUrlencodedCreateRequest" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">683</span>
+</aside>
+
+        <p class="phpdocumentor-summary">Normalize URL-encoded Create Request</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility"></span>
+                <span class="phpdocumentor-signature__name">normalizeUrlencodedCreateRequest</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$body</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
+
+        <section class="phpdocumentor-description"><p>Given an array of PHP-parsed form parameters (such as from $_POST), convert
+them into canonical microformats2 format.</p>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$config</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/Taproot-Micropub-Config.html"><abbr title="\Taproot\Micropub\Config">Config</abbr></a></span>
+                <span class="phpdocumentor-signature__argument__name">$body</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"></section>

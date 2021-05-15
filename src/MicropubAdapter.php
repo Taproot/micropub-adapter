@@ -664,10 +664,10 @@ function normalizeUrlencodedCreateRequest(array $body) {
 	foreach ($body as $key => $value) {
 		if ($key == 'h') {
 			$result['type'] = ["h-$value"];
-		} elseif (is_array($result)) {
-			$result['properties'][rtrim($key, '[]')] = $result;
+		} elseif (is_array($value)) {
+			$result['properties'][rtrim($key, '[]')] = $value;
 		} else {
-			$result['properties'][$key] = [$result];
+			$result['properties'][$key] = [$value];
 		}
 	}
 

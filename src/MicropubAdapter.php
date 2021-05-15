@@ -371,13 +371,13 @@ abstract class MicropubAdapter {
 			]));
 		}
 
-		$user = $this->verifyAccessTokenCallback($accessToken);
-		if ($user instanceof ResponseInterface) {
-			return $user; // Short-circuit.
-		} elseif ($user) {
+		$accessTokenResult = $this->verifyAccessTokenCallback($accessToken);
+		if ($accessTokenResult instanceof ResponseInterface) {
+			return $accessTokenResult; // Short-circuit.
+		} elseif ($accessTokenResult) {
 			// Log success.
-			$logger->info('Access token verified successfully.', ['user' => $user]);
-			$this->user = $user;
+			$logger->info('Access token verified successfully.', ['user' => $accessTokenResult]);
+			$this->user = $accessTokenResult;
 		} else {
 			// Log error, return not authorized response.
 			$logger->error($this->errorMessages['access_token_invalid']);
@@ -395,23 +395,23 @@ abstract class MicropubAdapter {
 				$q = $queryParams['q'];
 				if ($q == 'config') {
 					// Handle configuration query.
-					$logger->info('Handling config query', $q);
-					return $this->shortCircuit($this->configurationQueryCallback($q));
+					$logger->info('Handling config query', $queryParams);
+					return $this->shortCircuit($this->configurationQueryCallback($queryParams));
 				} elseif ($q == 'source') {
 					// Handle source query.
-					$logger->info('Handling source query', $q);
+					$logger->info('Handling source query', $queryParams);
 
 					// Normalize properties([]) paramter.
-					if (array_key_exists('properties[]', $q)) {
+					if (array_key_exists('properties[]', $queryParams)) {
 						$sourceProperties = $q['properties[]'];
-					} elseif (array_key_exists('properties', $q)) {
+					} elseif (array_key_exists('properties', $queryParams)) {
 						$sourceProperties = [$q['properties']];
 					} else {
 						$sourceProperties = null;
 					}
 
 					// Check for a url parameter.
-					if (!array_key_exists('url', $q)) {
+					if (!array_key_exists('url', $queryParams)) {
 						$logger->error($this->errorMessages['missing_url_parameter']);
 						return $this->shortCircuit(json_encode([
 							'error' => 'invalid_request',
@@ -419,7 +419,7 @@ abstract class MicropubAdapter {
 						]), 400);
 					}
 
-					$sourceQueryResult = $this->sourceQueryCallback($q['url'], $sourceProperties);
+					$sourceQueryResult = $this->sourceQueryCallback($queryParams['url'], $sourceProperties);
 					if ($sourceQueryResult === false) {
 						// Returning false is a shortcut for an “invalid URL” error.
 						$logger->error($this->errorMessages['post_with_given_url_not_found']);
@@ -432,8 +432,8 @@ abstract class MicropubAdapter {
 					return $this->shortCircuit($sourceQueryResult);
 				} elseif ($q == 'syndicate-to') {
 					// Handle syndicate-to query via the configuration query callback.
-					$logger->info('Handling syndicate-to query.', $q);
-					$configQueryResult = $this->configurationQueryCallback($q);
+					$logger->info('Handling syndicate-to query.', $queryParams);
+					$configQueryResult = $this->configurationQueryCallback($queryParams);
 					if ($configQueryResult instanceof ResponseInterface) {
 						return $configQueryResult; // Short-circuit, assume that the response from q=config will suffice for q=syndicate-to.
 					} elseif (is_array($configQueryResult and array_key_exists('syndicate-to', $configQueryResult))) {

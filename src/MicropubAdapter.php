@@ -65,7 +65,8 @@ abstract class MicropubAdapter {
 	 * Verify Access Token Callback
 	 * 
 	 * Given an access token, verify it and return an array with user data if valid,
-	 * or `false` if invalid. The user data array should look something like this:
+	 * or `false` if invalid. The user data array will typically look something like
+	 * this:
 	 * 
 	 *     [
 	 *       'me' => 'https://example.com',
@@ -74,7 +75,7 @@ abstract class MicropubAdapter {
 	 *       'date_issued' => \Datetime
 	 *     ]
 	 * 
-	 * But MicropubAdapter treats the data as being opaque, and simply makes it
+	 * MicropubAdapter treats the data as being opaque, and simply makes it
 	 * available to your callback methods for further processing, so you’re free
 	 * to structure it however you want.
 	 * 
@@ -82,11 +83,34 @@ abstract class MicropubAdapter {
 	 * instance of \Psr\Http\Message\ResponseInterface, which handleRequest()
 	 * will return unchanged.
 	 * 
-	 * @api
+	 * @param string $token The Authentication: Bearer access token.
+	 * @return array|string|false|ResponseInterface
 	 * @link https://micropub.spec.indieweb.org/#authentication-0
-	 * @return array|object|false|ResponseInterface
+	 * @api
 	 */
 	abstract public function verifyAccessTokenCallback(string $token);
+	
+	/**
+	 * Micropub Extension Callback
+	 * 
+	 * This callback is called after an access token is verified, but before any micropub-
+	 * specific handling takes place. This is the place to implement support for micropub
+	 * extensions.
+	 * 
+	 * If a falsy value is returned, the request continues to be handled as a regular 
+	 * micropub request. If it returns a truthy value (either a MP error code, an array to
+	 * be returned as JSON, or a ready-made ResponseInterface), request handling is halted
+	 * and the returned value is converted into a response and returned.
+	 * 
+	 * @param ServerRequestInterface $request
+	 * @return false|array|string|ResponseInterface
+	 * @link https://indieweb.org/Micropub-extensions
+	 * @api
+	 */
+	public function extensionCallback(ServerRequestInterface $request) {
+		// Default implementation: no-op;
+		return false;
+	}
 
 	/**
 	 * Configuration Query Callback
@@ -123,8 +147,8 @@ abstract class MicropubAdapter {
 	 * @api
 	 */
 	public function configurationQueryCallback(array $params) {
-		// Default response: an empty object.
-		return new object();
+		// Default response: an empty JSON object.
+		return $this->toResponse('{}');
 	}
 
 	/**
@@ -144,27 +168,7 @@ abstract class MicropubAdapter {
 	 */
 	public function sourceQueryCallback(string $url, array $properties = null) {
 		// Default response: not implemented.
-		return $this->shortCircuit([
-			'error' => 'invalid_request',
-			'error_description' => $this->errorMessages['not_implemented']
-		]);
-	}
-
-	/**
-	 * Unknown GET Callback
-	 * 
-	 * This method handles GET requests without a q parameter, with no defined purpose.
-	 * The default implementation is returning an HTTP 400 invalid_request error.
-	 * You can override it to add functionality to your micropub endpoint. 
-	 * 
-	 * @param ServerRequestInterface $request The request
-	 * @return string|array|ResponseInterface Return either a micropub error string, an array which will be turned into a JSON response, or a ready-made ResponseInterface.
-	 * @api
-	 */
-	public function unknownGetCallback(ServerRequestInterface $request) {
-		// Default response: not implemented.
-		$this->getLogger()->info('Handling unknown GET request with not_implemented response.');
-		return $this->shortCircuit([
+		return $this->toResponse([
 			'error' => 'invalid_request',
 			'error_description' => $this->errorMessages['not_implemented']
 		]);
@@ -188,7 +192,7 @@ abstract class MicropubAdapter {
 	 */
 	public function deleteCallback(string $url) {
 		// Default response: not implemented.
-		return $this->shortCircuit([
+		return $this->toResponse([
 			'error' => 'invalid_request',
 			'error_description' => $this->errorMessages['not_implemented']
 		]);
@@ -214,7 +218,7 @@ abstract class MicropubAdapter {
 	 */
 	public function undeleteCallback(string $url) {
 		// Default response: not implemented.
-		return $this->shortCircuit([
+		return $this->toResponse([
 			'error' => 'invalid_request',
 			'error_description' => $this->errorMessages['not_implemented']
 		]);
@@ -241,34 +245,10 @@ abstract class MicropubAdapter {
 	 */
 	public function updateCallback(string $url, array $actions) {
 		// Default response: not implemented.
-		return $this->shortCircuit([
+		return $this->toResponse([
 			'error' => 'invalid_request',
 			'error_description' => $this->errorMessages['not_implemented']
 		]);
-	}
-
-	/**
-	 * POST Request Extension Callback
-	 * 
-	 * If a POST request isn’t an Update or Delete request, this callback is called
-	 * before the adapter assumes that the request is a Create request.
-	 * 
-	 * If this callback returns a falsy value, request handling continues and is
-	 * passed on to the Create handler. This is the default behaviour.
-	 * 
-	 * If this callback returns any truthy value, it’s assumed that the callback
-	 * handled the request, and the result is short-circuited and returned.
-	 * 
-	 * Override this method to add new POST functionality to your micropub endpoint
-	 * e.g. handling non-standard values of the `action` parameter.
-	 * 
-	 * @param RequestInterface $request The Request
-	 * @return false|string|array|ResponseInterface Return false value to continue processing, a micropub error string to return an error, an array to return a JSON response, or a ready-made ResponseInterface.
-	 * @api
-	 */
-	public function postExtensionCallback(RequestInterface $request) {
-		// Default implementation: no-op.
-		return false;
 	}
 
 	/**
@@ -294,7 +274,7 @@ abstract class MicropubAdapter {
 	 */
 	public function createCallback(array $data, array $uploadedFiles) {
 		// Default response: not implemented.
-		return $this->shortCircuit([
+		return $this->toResponse([
 			'error' => 'invalid_request',
 			'error_description' => $this->errorMessages['not_implemented']
 		]);
@@ -332,6 +312,27 @@ abstract class MicropubAdapter {
 	}
 
 	/**
+	 * Micropub Media Endpoint Extension Callback
+	 * 
+	 * This callback is called after an access token is verified, but before any media-
+	 * endpoint-specific handling takes place. This is the place to implement support 
+	 * for micropub media endpoint extensions.
+	 * 
+	 * If a falsy value is returned, the request continues to be handled as a regular 
+	 * micropub request. If it returns a truthy value (either a MP error code, an array to
+	 * be returned as JSON, or a ready-made ResponseInterface), request handling is halted
+	 * and the returned value is converted into a response and returned.
+	 * 
+	 * @param ServerRequestInterface $request
+	 * @return false|array|string|ResponseInterface
+	 * @link https://indieweb.org/Micropub-extensions
+	 */
+	public function mediaEndpointExtensionCallback(ServerRequestInterface $request) {
+		// Default implementation: no-op.
+		return false;
+	}
+
+	/**
 	 * Get Logger
 	 * 
 	 * Returns an instance of Psr\LoggerInterface, used for logging. Override to
@@ -347,13 +348,17 @@ abstract class MicropubAdapter {
 	}
 
 	/**
-	 * Handle Request
+	 * Handle Micropub Request
 	 * 
-	 * Handle an incoming request to a webmention endpoint, dispatching it to the appropriate 
-	 * callback defined in the $config parameter.
+	 * Handle an incoming request to a micropub endpoint, performing error checking and 
+	 * handing execution off to the appropriate callback.
+	 * 
+	 * `$this->request` is set to the value of the `$request` argument, for use within
+	 * callbacks. If the access token could be verified, `$this->user` is set to the value
+	 * returned from `verifyAccessTokenCallback()` for use within callbacks.
 	 * 
 	 * @param ServerRequestInterface $request
-	 * @return 
+	 * @return ResponseInterface
 	 */
 	public function handleRequest(ServerRequestInterface $request) {
 		// Make $request available to callbacks.
@@ -387,16 +392,23 @@ abstract class MicropubAdapter {
 			]));
 		}
 		
-		$queryParams = $request->getQueryParams();
+		// Give subclasses an opportunity to pre-emptively handle any extension cases before moving on to
+		// standard micropub handling.
+		$extensionCallbackResult = $this->extensionCallback($request);
+		if ($extensionCallbackResult) {
+			return $this->toResponse($extensionCallbackResult);
+		}
 
 		// Check against method.
 		if (strtolower($request->getMethod()) == 'get') {
+			$queryParams = $request->getQueryParams();
+
 			if (array_key_exists('q', $queryParams)) {
 				$q = $queryParams['q'];
 				if ($q == 'config') {
 					// Handle configuration query.
 					$logger->info('Handling config query', $queryParams);
-					return $this->shortCircuit($this->configurationQueryCallback($queryParams));
+					return $this->toResponse($this->configurationQueryCallback($queryParams));
 				} elseif ($q == 'source') {
 					// Handle source query.
 					$logger->info('Handling source query', $queryParams);
@@ -413,7 +425,7 @@ abstract class MicropubAdapter {
 					// Check for a url parameter.
 					if (!array_key_exists('url', $queryParams)) {
 						$logger->error($this->errorMessages['missing_url_parameter']);
-						return $this->shortCircuit(json_encode([
+						return $this->toResponse(json_encode([
 							'error' => 'invalid_request',
 							'error_description' => $this->errorMessages['missing_url_parameter']
 						]), 400);
@@ -429,7 +441,7 @@ abstract class MicropubAdapter {
 						];
 					}
 
-					return $this->shortCircuit($sourceQueryResult);
+					return $this->toResponse($sourceQueryResult);
 				} elseif ($q == 'syndicate-to') {
 					// Handle syndicate-to query via the configuration query callback.
 					$logger->info('Handling syndicate-to query.', $queryParams);
@@ -447,33 +459,13 @@ abstract class MicropubAdapter {
 				}
 			}
 
-			// The GET request had no ?q param, or the query is unknown.
-			// Logged within the method.
-			return $this->shortCircuit($this->unknownGetCallback($request));
+			// We weren’t able to handle this GET request.
+			$logger->error('Micropub endpoint was not able to handle GET request', $queryParams);
+			return $this->toResponse('invalid_request');
 		} elseif (strtolower($request->getMethod()) == 'post') {
 			$contentType = $request->getHeader('content-type')[0];
 			$jsonRequest = $contentType == 'application/json';
 			
-			// Look for the presence of a single uploaded file called 'file'
-			if (array_key_exists('file', $request->getUploadedFiles())) {
-				// This is most probably a media endpoint request.
-				$mediaCallbackResult = $this->mediaEndpointCallback($request->getUploadedFiles()['file']);
-
-				if ($mediaCallbackResult) {
-					if (is_string($mediaCallbackResult) and !in_array($mediaCallbackResult, MICROPUB_ERROR_CODES)) {
-						// Success! Return an HTTP 201 response with the location header.
-						return new Response(201, ['location' => $mediaCallbackResult]);
-					}
-
-					// Otherwise, handle whatever it is we got.
-					return $this->shortCircuit($mediaCallbackResult);
-				}
-				// If we got a falsy value from mediaEndpointCallback, then continue processing the request.
-				// It likely will result in an error, but if the user has defined a different media endpoint,
-				// then we shouldn’t halt requests to the micropub endpoint just because they look like
-				// media endpoint requests.
-			}
-
 			// Get a parsed body sufficient to determine the nature of the request.
 			if ($jsonRequest) {
 				$parsedBody = json_decode($request->getBody()->getContents(), true);
@@ -491,9 +483,9 @@ abstract class MicropubAdapter {
 						$deleteResult = $this->deleteCallback($parsedBody['url']);
 						if ($deleteResult === true) {
 							// If the delete was successful, respond with an empty 204 response.
-							return $this->shortCircuit('', 204);
+							return $this->toResponse('', 204);
 						} else {
-							return $this->shortCircuit($deleteResult);
+							return $this->toResponse($deleteResult);
 						}
 					} else {
 						$logger->warning($this->errorMessages['missing_url_parameter']);
@@ -509,13 +501,13 @@ abstract class MicropubAdapter {
 						$undeleteResult = $this->undeleteCallback($parsedBody['url']);
 						if ($undeleteResult === true) {
 							// If the delete was successful, respond with an empty 204 response.
-							return $this->shortCircuit('', 204);
+							return $this->toResponse('', 204);
 						} elseif (is_string($undeleteResult) and !in_array($undeleteResult, MICROPUB_ERROR_CODES)) {
 							// The non-error-code string returned from undelete is the URL of the new location of the
 							// undeleted content.
 							return new Response(201, ['location' => $undeleteResult]);
 						} else {
-							return $this->shortCircuit($undeleteResult);
+							return $this->toResponse($undeleteResult);
 						}
 					} else {
 						$logger->warning($this->errorMessages['missing_url_parameter']);
@@ -537,22 +529,15 @@ abstract class MicropubAdapter {
 					$updateResult = $this->updateCallback($parsedBody['url'], $parsedBody);
 					if ($updateResult === true) {
 						// Basic success.
-						return $this->shortCircuit('', 204);
+						return $this->toResponse('', 204);
 					} elseif (is_string($updateResult) and !in_array($updateResult, MICROPUB_ERROR_CODES)) {
 						// The non-error-code string returned from update is the URL of the new location of the
 						// undeleted content.
 						return new Response(201, ['location' => $updateResult]);
 					} else {
-						return $this->shortCircuit($updateResult);
+						return $this->toResponse($updateResult);
 					}
 				}
-			}
-			
-			// Before assuming that the request is a Create request, delegate to an extension
-			// callback to handle any extension-specific commands.
-			$postExtensionResult = $this->postExtensionCallback($request);
-			if ($postExtensionResult) {
-				return $this->shortCircuit($postExtensionResult);
 			}
 
 			// Assume that the request is a Create request.
@@ -568,17 +553,85 @@ abstract class MicropubAdapter {
 				// Success, return HTTP 201 with Location header.
 				return new Response(201, ['location' => $createResponse]);
 			} else {
-				return $this->shortCircuit($createResponse);
+				return $this->toResponse($createResponse);
 			}
 
 		}
 		
 		// Request method was something other than GET or POST.
-		return $this->shortCircuit('invalid_request');
+		return $this->toResponse('invalid_request');
 	}
 
 	/**
-	 * JSON Short Circuit Helper
+	 * Handle Media Endpoint Request
+	 * 
+	 * @param ServerRequestInterface $request
+	 */
+	public function handleMediaEndpointRequest(ServerRequestInterface $request) {
+		$logger = $this->getLogger();
+		$this->request = $request;
+
+		// Get and verify auth token.
+		$accessToken = getAccessToken($request);
+		if ($accessToken === null) {
+			$logger->warning($this->errorMessages['unauthorized']);
+			return new Response(401, ['content-type' => 'application/json'], json_encode([
+				'error' => 'unauthorized',
+				'error_description' => $this->errorMessages['unauthorized']
+			]));
+		}
+
+		$accessTokenResult = $this->verifyAccessTokenCallback($accessToken);
+		if ($accessTokenResult instanceof ResponseInterface) {
+			return $accessTokenResult; // Short-circuit.
+		} elseif ($accessTokenResult) {
+			// Log success.
+			$logger->info('Access token verified successfully.', ['user' => $accessTokenResult]);
+			$this->user = $accessTokenResult;
+		} else {
+			// Log error, return not authorized response.
+			$logger->error($this->errorMessages['access_token_invalid']);
+			return new Response(403, ['content-type' => 'application/json'], json_encode([
+				'error' => 'forbidden',
+				'error_description' => $this->errorMessages['access_token_invalid']
+			]));
+		}
+
+		// Give implementations a chance to pre-empt regular media endpoint handling, in order
+		// to implement extensions.
+		$mediaEndpointExtensionResult = $this->mediaEndpointExtensionCallback($request);
+		if ($mediaEndpointExtensionResult) {
+			return $this->toResponse($mediaEndpointExtensionResult);
+		}
+
+		// Only support POST requests to the media endpoint.
+		if (strtolower($request->getMethod()) != 'post') {
+			$logger->error('Got a non-POST request to the media endpoint', ['method' => $request->getMethod()]);
+			return $this->toResponse('invalid_request');
+		}
+
+		// Look for the presence of an uploaded file called 'file'
+		if (array_key_exists('file', $request->getUploadedFiles())) {
+			// This is most probably a media endpoint request.
+			$mediaCallbackResult = $this->mediaEndpointCallback($request->getUploadedFiles()['file']);
+
+			if ($mediaCallbackResult) {
+				if (is_string($mediaCallbackResult) and !in_array($mediaCallbackResult, MICROPUB_ERROR_CODES)) {
+					// Success! Return an HTTP 201 response with the location header.
+					return new Response(201, ['location' => $mediaCallbackResult]);
+				}
+
+				// Otherwise, handle whatever it is we got.
+				return $this->toResponse($mediaCallbackResult);
+			}
+		}
+
+		// Either no file was provided, or mediaEndpointCallback returned a falsy value.
+		return $this->toResponse('invalid_request');
+	}
+
+	/**
+	 * To Response
 	 * 
 	 * Intelligently convert various shortcuts into a suitable instance of
 	 * ResponseInterface. Existing ResponseInterfaces are passed through
@@ -588,7 +641,7 @@ abstract class MicropubAdapter {
 	 * @param int $status=200
 	 * @return ResponseInterface
 	 */
-	function shortCircuit($resultOrResponse, $status=200) {
+	function toResponse($resultOrResponse, $status=200) {
 		if ($resultOrResponse instanceof ResponseInterface) {
 			return $resultOrResponse;
 		}

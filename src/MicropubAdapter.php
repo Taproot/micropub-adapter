@@ -327,10 +327,6 @@ abstract class MicropubAdapter {
 	/**
 	 * Media Endpoint Callback
 	 * 
-	 * If you want your micropub endpoint to also function as its own Media Endpoint, implement
-	 * this callback and return your micropub endpoint URL in the `'media-endpoint'` property
-	 * of your configurationQueryCallback.
-	 * 
 	 * To handle file upload requests:
 	 * 
 	 * * If the current access token scope doesn’t permit uploads, return either

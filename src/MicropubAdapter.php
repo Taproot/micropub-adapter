@@ -75,22 +75,22 @@ const MICROPUB_ERROR_CODES = ['invalid_request', 'unauthorized', 'insufficient_s
 abstract class MicropubAdapter {
 
 	/**
-	 * @param array $user The validated access_token, made available for use in callback methods.
+	 * @property array $user The validated access_token, made available for use in callback methods.
 	 */
 	private $user;
 
 	/**
-	 * @param RequestInterface $request The current request, made available for use in callback methods.
+	 * @property RequestInterface $request The current request, made available for use in callback methods.
 	 */
 	private $request;
 	
 	/**
-	 * @param LoggerInterface $logger The logger used by MicropubAdaptor for internal logging.
+	 * @property LoggerInterface $logger The logger used by MicropubAdaptor for internal logging.
 	 */
 	private $logger;
 
 	/**
-	 * @param array $errorMessages An array mapping micropub and adapter-specific error codes to human-friendly descriptions.
+	 * @property array $errorMessages An array mapping micropub and adapter-specific error codes to human-friendly descriptions.
 	 */
 	private $errorMessages = [
 		// Built-in micropub error types

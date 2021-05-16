@@ -169,11 +169,25 @@ the conversion by returning a HTTP Response, which will be returned by handleReq
 <dd>Delete Callback</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_extensionCallback">extensionCallback()</a>
+    <span>
+                        &nbsp;: false|array&lt;string|int, mixed&gt;|string|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr>    </span>
+</dt>
+<dd>Micropub Extension Callback</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_handleMediaEndpointRequest">handleMediaEndpointRequest()</a>
+    <span>
+                        &nbsp;: <abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr>    </span>
+</dt>
+<dd>Handle Media Endpoint Request</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_handleRequest">handleRequest()</a>
     <span>
-                        &nbsp;: mixed    </span>
+                        &nbsp;: <abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr>    </span>
 </dt>
-<dd>Handle Request</dd>
+<dd>Handle Micropub Request</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_mediaEndpointCallback">mediaEndpointCallback()</a>
@@ -183,18 +197,11 @@ the conversion by returning a HTTP Response, which will be returned by handleReq
 <dd>Media Endpoint Callback</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_postExtensionCallback">postExtensionCallback()</a>
+    <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_mediaEndpointExtensionCallback">mediaEndpointExtensionCallback()</a>
     <span>
-                        &nbsp;: false|string|array&lt;string|int, mixed&gt;|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr>    </span>
+                        &nbsp;: false|array&lt;string|int, mixed&gt;|string|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr>    </span>
 </dt>
-<dd>POST Request Extension Callback</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_shortCircuit">shortCircuit()</a>
-    <span>
-                        &nbsp;: <abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr>    </span>
-</dt>
-<dd>JSON Short Circuit Helper</dd>
+<dd>Micropub Media Endpoint Extension Callback</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_sourceQueryCallback">sourceQueryCallback()</a>
@@ -204,25 +211,18 @@ the conversion by returning a HTTP Response, which will be returned by handleReq
 <dd>Source Query Callback</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_toResponse">toResponse()</a>
+    <span>
+                        &nbsp;: <abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr>    </span>
+</dt>
+<dd>To Response</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_undeleteCallback">undeleteCallback()</a>
     <span>
                         &nbsp;: string|true|array&lt;string|int, mixed&gt;    </span>
 </dt>
 <dd>Undelete Callback</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_unknownGetCallback">unknownGetCallback()</a>
-    <span>
-                        &nbsp;: string|array&lt;string|int, mixed&gt;|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr>    </span>
-</dt>
-<dd>Unknown GET Callback</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_unknownQueryCallback">unknownQueryCallback()</a>
-    <span>
-                        &nbsp;: string|array&lt;string|int, mixed&gt;|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr>    </span>
-</dt>
-<dd>Unknown Query Callback</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_updateCallback">updateCallback()</a>
@@ -234,7 +234,7 @@ the conversion by returning a HTTP Response, which will be returned by handleReq
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_verifyAccessTokenCallback">verifyAccessTokenCallback()</a>
     <span>
-                        &nbsp;: array&lt;string|int, mixed&gt;|object|false|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr>    </span>
+                        &nbsp;: array&lt;string|int, mixed&gt;|string|false|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr>    </span>
 </dt>
 <dd>Verify Access Token Callback</dd>
 
@@ -412,7 +412,7 @@ the conversion by returning a HTTP Response, which will be returned by handleReq
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">125</span>
+    <span class="phpdocumentor-element-found-in__line">149</span>
 </aside>
 
         <p class="phpdocumentor-summary">Configuration Query Callback</p>
@@ -496,7 +496,7 @@ return just that.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">316</span>
+    <span class="phpdocumentor-element-found-in__line">275</span>
 </aside>
 
         <p class="phpdocumentor-summary">Create Callback</p>
@@ -577,7 +577,7 @@ a HTTP 201 success response, or your own ResponseInterface.</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">210</span>
+    <span class="phpdocumentor-element-found-in__line">193</span>
 </aside>
 
         <p class="phpdocumentor-summary">Delete Callback</p>
@@ -637,24 +637,90 @@ an array with <code class="prettyprint">'error'</code> and <code class="prettypr
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_handleRequest">
-        handleRequest()
-        <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_handleRequest" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_extensionCallback">
+        extensionCallback()
+        <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_extensionCallback" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">379</span>
+    <span class="phpdocumentor-element-found-in__line">110</span>
 </aside>
 
-        <p class="phpdocumentor-summary">Handle Request</p>
+        <p class="phpdocumentor-summary">Micropub Extension Callback</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">handleRequest</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\Psr\Http\Message\ServerRequestInterface">ServerRequestInterface</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                <span class="phpdocumentor-signature__name">extensionCallback</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\Psr\Http\Message\ServerRequestInterface">ServerRequestInterface</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">false|array&lt;string|int, mixed&gt;|string|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span></code>
 
-        <section class="phpdocumentor-description"><p>Handle an incoming request to a webmention endpoint, dispatching it to the appropriate
-callback defined in the $config parameter.</p>
+        <section class="phpdocumentor-description"><p>This callback is called after an access token is verified, but before any micropub-
+specific handling takes place. This is the place to implement support for micropub
+extensions.</p>
+<p>If a falsy value is returned, the request continues to be handled as a regular
+micropub request. If it returns a truthy value (either a MP error code, an array to
+be returned as JSON, or a ready-made ResponseInterface), request handling is halted
+and the returned value is converted into a response and returned.</p>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$request</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\Psr\Http\Message\ServerRequestInterface">ServerRequestInterface</abbr></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"></section>
+
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">link</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                                        <a class="phpdocumentor-tag-link" href="https://indieweb.org/Micropub-extensions"> https://indieweb.org/Micropub-extensions </a>
+                    
+                                    </dd>
+                        </dl>
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type">false|array&lt;string|int, mixed&gt;|string|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span>
+            &mdash;
+            <section class="phpdocumentor-description"></section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_handleMediaEndpointRequest">
+        handleMediaEndpointRequest()
+        <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_handleMediaEndpointRequest" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">576</span>
+</aside>
+
+        <p class="phpdocumentor-summary">Handle Media Endpoint Request</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">handleMediaEndpointRequest</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\Psr\Http\Message\ServerRequestInterface">ServerRequestInterface</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span></code>
+
+        <section class="phpdocumentor-description"><p>Handle a request to a micropub media-endpoint.</p>
+<p>As with <code class="prettyprint">handleRequest()</code>, <code class="prettyprint">$this-&gt;request</code> and <code class="prettyprint">$this-&gt;user</code> are made available
+for use within callbacks.</p>
 </section>
 
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -672,7 +738,57 @@ callback defined in the $config parameter.</p>
     
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
+    <span class="phpdocumentor-signature__response_type"><abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span>
+            &mdash;
+            <section class="phpdocumentor-description"></section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_handleRequest">
+        handleRequest()
+        <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_handleRequest" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">363</span>
+</aside>
+
+        <p class="phpdocumentor-summary">Handle Micropub Request</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">handleRequest</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\Psr\Http\Message\ServerRequestInterface">ServerRequestInterface</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span></code>
+
+        <section class="phpdocumentor-description"><p>Handle an incoming request to a micropub endpoint, performing error checking and
+handing execution off to the appropriate callback.</p>
+<p><code class="prettyprint">$this-&gt;request</code> is set to the value of the <code class="prettyprint">$request</code> argument, for use within
+callbacks. If the access token could be verified, <code class="prettyprint">$this-&gt;user</code> is set to the value
+returned from <code class="prettyprint">verifyAccessTokenCallback()</code> for use within callbacks.</p>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$request</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\Psr\Http\Message\ServerRequestInterface">ServerRequestInterface</abbr></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"></section>
+
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type"><abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span>
             &mdash;
             <section class="phpdocumentor-description"></section>
 
@@ -691,7 +807,7 @@ callback defined in the $config parameter.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">350</span>
+    <span class="phpdocumentor-element-found-in__line">309</span>
 </aside>
 
         <p class="phpdocumentor-summary">Media Endpoint Callback</p>
@@ -760,105 +876,60 @@ your own elsewhere, simply ignore this method, resulting in its default no-op be
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_postExtensionCallback">
-        postExtensionCallback()
-        <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_postExtensionCallback" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_mediaEndpointExtensionCallback">
+        mediaEndpointExtensionCallback()
+        <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_mediaEndpointExtensionCallback" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">290</span>
+    <span class="phpdocumentor-element-found-in__line">330</span>
 </aside>
 
-        <p class="phpdocumentor-summary">POST Request Extension Callback</p>
+        <p class="phpdocumentor-summary">Micropub Media Endpoint Extension Callback</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">postExtensionCallback</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\Psr\Http\Message\RequestInterface">RequestInterface</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">false|string|array&lt;string|int, mixed&gt;|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span></code>
+                <span class="phpdocumentor-signature__name">mediaEndpointExtensionCallback</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\Psr\Http\Message\ServerRequestInterface">ServerRequestInterface</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">false|array&lt;string|int, mixed&gt;|string|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span></code>
 
-        <section class="phpdocumentor-description"><p>If a POST request isn’t an Update or Delete request, this callback is called
-before the adapter assumes that the request is a Create request.</p>
-<p>If this callback returns a falsy value, request handling continues and is
-passed on to the Create handler. This is the default behaviour.</p>
-<p>If this callback returns any truthy value, it’s assumed that the callback
-handled the request, and the result is short-circuited and returned.</p>
-<p>Override this method to add new POST functionality to your micropub endpoint
-e.g. handling non-standard values of the <code class="prettyprint">action</code> parameter.</p>
+        <section class="phpdocumentor-description"><p>This callback is called after an access token is verified, but before any media-
+endpoint-specific handling takes place. This is the place to implement support
+for micropub media endpoint extensions.</p>
+<p>If a falsy value is returned, the request continues to be handled as a regular
+micropub request. If it returns a truthy value (either a MP error code, an array to
+be returned as JSON, or a ready-made ResponseInterface), request handling is halted
+and the returned value is converted into a response and returned.</p>
 </section>
 
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$request</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\Psr\Http\Message\RequestInterface">RequestInterface</abbr></span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>The Request</p>
-</section>
-
-            </dd>
-            </dl>
-
-    
-
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">false|string|array&lt;string|int, mixed&gt;|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>Return false value to continue processing, a micropub error string to return an error, an array to return a JSON response, or a ready-made ResponseInterface.</p>
-</section>
-
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_shortCircuit">
-        shortCircuit()
-        <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_shortCircuit" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">616</span>
-</aside>
-
-        <p class="phpdocumentor-summary">JSON Short Circuit Helper</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">shortCircuit</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|array&lt;string|int, mixed&gt;|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$resultOrResponse</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$status</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">200</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span></code>
-
-        <section class="phpdocumentor-description"><p>Intelligently convert various shortcuts into a suitable instance of
-ResponseInterface. Existing ResponseInterfaces are passed through
-without alteration.</p>
-</section>
-
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$resultOrResponse</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string|array&lt;string|int, mixed&gt;|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span>
+                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\Psr\Http\Message\ServerRequestInterface">ServerRequestInterface</abbr></span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"></section>
 
             </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$status</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
-                 = <span class="phpdocumentor-signature__argument__default-value">200</span>            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
             </dl>
 
     
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">link</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                                        <a class="phpdocumentor-tag-link" href="https://indieweb.org/Micropub-extensions"> https://indieweb.org/Micropub-extensions </a>
+                    
+                                    </dd>
+                        </dl>
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type"><abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span>
+    <span class="phpdocumentor-signature__response_type">false|array&lt;string|int, mixed&gt;|string|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span>
             &mdash;
             <section class="phpdocumentor-description"></section>
 
@@ -877,7 +948,7 @@ without alteration.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">145</span>
+    <span class="phpdocumentor-element-found-in__line">169</span>
 </aside>
 
         <p class="phpdocumentor-summary">Source Query Callback</p>
@@ -943,6 +1014,61 @@ correctly-formatted error response.</p>
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_toResponse">
+        toResponse()
+        <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_toResponse" class="headerlink"><i class="fas fa-link"></i></a>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">650</span>
+</aside>
+
+        <p class="phpdocumentor-summary">To Response</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__name">toResponse</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|array&lt;string|int, mixed&gt;|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$resultOrResponse</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$status</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">200</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span></code>
+
+        <section class="phpdocumentor-description"><p>Intelligently convert various shortcuts into a suitable instance of
+ResponseInterface. Existing ResponseInterfaces are passed through
+without alteration.</p>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$resultOrResponse</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string|array&lt;string|int, mixed&gt;|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"></section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$status</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">200</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+    <span class="phpdocumentor-signature__response_type"><abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span>
+            &mdash;
+            <section class="phpdocumentor-description"></section>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_undeleteCallback">
         undeleteCallback()
         <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_undeleteCallback" class="headerlink"><i class="fas fa-link"></i></a>
@@ -950,7 +1076,7 @@ correctly-formatted error response.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">236</span>
+    <span class="phpdocumentor-element-found-in__line">219</span>
 </aside>
 
         <p class="phpdocumentor-summary">Undelete Callback</p>
@@ -1013,107 +1139,6 @@ undeletion caused the post’s URL to change.</li>
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_unknownGetCallback">
-        unknownGetCallback()
-        <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_unknownGetCallback" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">185</span>
-</aside>
-
-        <p class="phpdocumentor-summary">Unknown GET Callback</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">unknownGetCallback</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\Psr\Http\Message\ServerRequestInterface">ServerRequestInterface</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string|array&lt;string|int, mixed&gt;|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span></code>
-
-        <section class="phpdocumentor-description"><p>This method handles GET requests without a q parameter, with no defined purpose.
-The default implementation is returning an HTTP 400 invalid_request error.
-You can override it to add functionality to your micropub endpoint.</p>
-</section>
-
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$request</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\Psr\Http\Message\ServerRequestInterface">ServerRequestInterface</abbr></span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>The request</p>
-</section>
-
-            </dd>
-            </dl>
-
-    
-
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">string|array&lt;string|int, mixed&gt;|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>Return either a micropub error string, an array which will be turned into a JSON response, or a ready-made ResponseInterface.</p>
-</section>
-
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_unknownQueryCallback">
-        unknownQueryCallback()
-        <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_unknownQueryCallback" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">165</span>
-</aside>
-
-        <p class="phpdocumentor-summary">Unknown Query Callback</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__name">unknownQueryCallback</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$params</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string|array&lt;string|int, mixed&gt;|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span></code>
-
-        <section class="phpdocumentor-description"><p>This method handles GET requests which have a q parameter which isn’t handled
-by MicropubAdapter. By default it returns an HTTP 400 invalid_request error,
-but you can override it to add additional functionality to your micropub
-endpoint.</p>
-</section>
-
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$params</span>
-                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>The unaltered query parameters from the request.</p>
-</section>
-
-            </dd>
-            </dl>
-
-    
-
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">string|array&lt;string|int, mixed&gt;|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>Return either a micropub error string, an array which will be turned into a JSON response, or a ready-made ResponseInterface.</p>
-</section>
-
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
     <h4 class="phpdocumentor-element__name" id="method_updateCallback">
         updateCallback()
         <a href="classes/Taproot-Micropub-MicropubAdapter.html#method_updateCallback" class="headerlink"><i class="fas fa-link"></i></a>
@@ -1121,7 +1146,7 @@ endpoint.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">263</span>
+    <span class="phpdocumentor-element-found-in__line">246</span>
 </aside>
 
         <p class="phpdocumentor-summary">Update Callback</p>
@@ -1200,17 +1225,18 @@ undeletion caused the post’s URL to change.</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">89</span>
+    <span class="phpdocumentor-element-found-in__line">91</span>
 </aside>
 
         <p class="phpdocumentor-summary">Verify Access Token Callback</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-    <span class="phpdocumentor-signature__abstract">abstract</span>            <span class="phpdocumentor-signature__name">verifyAccessTokenCallback</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$token</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;|object|false|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span></code>
+    <span class="phpdocumentor-signature__abstract">abstract</span>            <span class="phpdocumentor-signature__name">verifyAccessTokenCallback</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$token</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;|string|false|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span></code>
 
         <section class="phpdocumentor-description"><p>Given an access token, verify it and return an array with user data if valid,
-or <code class="prettyprint">false</code> if invalid. The user data array should look something like this:</p>
+or <code class="prettyprint">false</code> if invalid. The user data array will typically look something like
+this:</p>
 <pre class="prettyprint"><code class="prettyprint">[
   'me' =&gt; 'https://example.com',
   'client_id' =&gt; 'https://clientapp.example',
@@ -1218,7 +1244,7 @@ or <code class="prettyprint">false</code> if invalid. The user data array should
   'date_issued' =&gt; \Datetime
 ]
 </code></pre>
-<p>But MicropubAdapter treats the data as being opaque, and simply makes it
+<p>MicropubAdapter treats the data as being opaque, and simply makes it
 available to your callback methods for further processing, so you’re free
 to structure it however you want.</p>
 <p>You can also short-circuit the micropub request handling by returning an
@@ -1233,7 +1259,9 @@ will return unchanged.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                
+                    <section class="phpdocumentor-description"><p>The Authentication: Bearer access token.</p>
+</section>
+
             </dd>
             </dl>
 
@@ -1253,7 +1281,7 @@ will return unchanged.</p>
                         </dl>
 
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;|object|false|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span>
+    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;|string|false|<abbr title="\Psr\Http\Message\ResponseInterface">ResponseInterface</abbr></span>
             &mdash;
             <section class="phpdocumentor-description"></section>
 
@@ -1272,7 +1300,7 @@ will return unchanged.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">363</span>
+    <span class="phpdocumentor-element-found-in__line">343</span>
 </aside>
 
         <p class="phpdocumentor-summary">Get Logger</p>

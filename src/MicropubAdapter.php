@@ -565,7 +565,13 @@ abstract class MicropubAdapter {
 	/**
 	 * Handle Media Endpoint Request
 	 * 
+	 * Handle a request to a micropub media-endpoint.
+	 * 
+	 * As with `handleRequest()`, `$this->request` and `$this->user` are made available
+	 * for use within callbacks.
+	 * 
 	 * @param ServerRequestInterface $request
+	 * @return ResponseInterface
 	 */
 	public function handleMediaEndpointRequest(ServerRequestInterface $request) {
 		$logger = $this->getLogger();

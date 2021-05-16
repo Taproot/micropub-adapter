@@ -26,6 +26,11 @@ Search.appendIndex(
             "summary": "Verify\u0020Access\u0020Token\u0020Callback",
             "url": "classes/Taproot-Micropub-MicropubAdapter.html#method_verifyAccessTokenCallback"
         },                {
+            "fqsen": "\\Taproot\\Micropub\\MicropubAdapter\u003A\u003AextensionCallback\u0028\u0029",
+            "name": "extensionCallback",
+            "summary": "Micropub\u0020Extension\u0020Callback",
+            "url": "classes/Taproot-Micropub-MicropubAdapter.html#method_extensionCallback"
+        },                {
             "fqsen": "\\Taproot\\Micropub\\MicropubAdapter\u003A\u003AconfigurationQueryCallback\u0028\u0029",
             "name": "configurationQueryCallback",
             "summary": "Configuration\u0020Query\u0020Callback",
@@ -35,16 +40,6 @@ Search.appendIndex(
             "name": "sourceQueryCallback",
             "summary": "Source\u0020Query\u0020Callback",
             "url": "classes/Taproot-Micropub-MicropubAdapter.html#method_sourceQueryCallback"
-        },                {
-            "fqsen": "\\Taproot\\Micropub\\MicropubAdapter\u003A\u003AunknownQueryCallback\u0028\u0029",
-            "name": "unknownQueryCallback",
-            "summary": "Unknown\u0020Query\u0020Callback",
-            "url": "classes/Taproot-Micropub-MicropubAdapter.html#method_unknownQueryCallback"
-        },                {
-            "fqsen": "\\Taproot\\Micropub\\MicropubAdapter\u003A\u003AunknownGetCallback\u0028\u0029",
-            "name": "unknownGetCallback",
-            "summary": "Unknown\u0020GET\u0020Callback",
-            "url": "classes/Taproot-Micropub-MicropubAdapter.html#method_unknownGetCallback"
         },                {
             "fqsen": "\\Taproot\\Micropub\\MicropubAdapter\u003A\u003AdeleteCallback\u0028\u0029",
             "name": "deleteCallback",
@@ -61,11 +56,6 @@ Search.appendIndex(
             "summary": "Update\u0020Callback",
             "url": "classes/Taproot-Micropub-MicropubAdapter.html#method_updateCallback"
         },                {
-            "fqsen": "\\Taproot\\Micropub\\MicropubAdapter\u003A\u003ApostExtensionCallback\u0028\u0029",
-            "name": "postExtensionCallback",
-            "summary": "POST\u0020Request\u0020Extension\u0020Callback",
-            "url": "classes/Taproot-Micropub-MicropubAdapter.html#method_postExtensionCallback"
-        },                {
             "fqsen": "\\Taproot\\Micropub\\MicropubAdapter\u003A\u003AcreateCallback\u0028\u0029",
             "name": "createCallback",
             "summary": "Create\u0020Callback",
@@ -76,6 +66,11 @@ Search.appendIndex(
             "summary": "Media\u0020Endpoint\u0020Callback",
             "url": "classes/Taproot-Micropub-MicropubAdapter.html#method_mediaEndpointCallback"
         },                {
+            "fqsen": "\\Taproot\\Micropub\\MicropubAdapter\u003A\u003AmediaEndpointExtensionCallback\u0028\u0029",
+            "name": "mediaEndpointExtensionCallback",
+            "summary": "Micropub\u0020Media\u0020Endpoint\u0020Extension\u0020Callback",
+            "url": "classes/Taproot-Micropub-MicropubAdapter.html#method_mediaEndpointExtensionCallback"
+        },                {
             "fqsen": "\\Taproot\\Micropub\\MicropubAdapter\u003A\u003AgetLogger\u0028\u0029",
             "name": "getLogger",
             "summary": "Get\u0020Logger",
@@ -83,13 +78,18 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Taproot\\Micropub\\MicropubAdapter\u003A\u003AhandleRequest\u0028\u0029",
             "name": "handleRequest",
-            "summary": "Handle\u0020Request",
+            "summary": "Handle\u0020Micropub\u0020Request",
             "url": "classes/Taproot-Micropub-MicropubAdapter.html#method_handleRequest"
         },                {
-            "fqsen": "\\Taproot\\Micropub\\MicropubAdapter\u003A\u003AshortCircuit\u0028\u0029",
-            "name": "shortCircuit",
-            "summary": "JSON\u0020Short\u0020Circuit\u0020Helper",
-            "url": "classes/Taproot-Micropub-MicropubAdapter.html#method_shortCircuit"
+            "fqsen": "\\Taproot\\Micropub\\MicropubAdapter\u003A\u003AhandleMediaEndpointRequest\u0028\u0029",
+            "name": "handleMediaEndpointRequest",
+            "summary": "Handle\u0020Media\u0020Endpoint\u0020Request",
+            "url": "classes/Taproot-Micropub-MicropubAdapter.html#method_handleMediaEndpointRequest"
+        },                {
+            "fqsen": "\\Taproot\\Micropub\\MicropubAdapter\u003A\u003AtoResponse\u0028\u0029",
+            "name": "toResponse",
+            "summary": "To\u0020Response",
+            "url": "classes/Taproot-Micropub-MicropubAdapter.html#method_toResponse"
         },                {
             "fqsen": "\\Taproot\\Micropub\\MicropubAdapter\u003A\u003A\u0024user",
             "name": "user",

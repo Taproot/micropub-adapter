@@ -503,7 +503,7 @@ abstract class MicropubAdapter {
 			$logger->error('Micropub endpoint was not able to handle GET request', $queryParams);
 			return $this->toResponse('invalid_request');
 		} elseif (strtolower($request->getMethod()) == 'post') {
-			$contentType = $request->getHeader('content-type')[0];
+			$contentType = $request->getHeaderLine('content-type');
 			$jsonRequest = $contentType == 'application/json';
 			
 			// Get a parsed body sufficient to determine the nature of the request.

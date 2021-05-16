@@ -4,3 +4,4 @@ vendor/
 phpDocumentor.phar
 phpdoc.xml
 .phpdoc
+tests/coverage

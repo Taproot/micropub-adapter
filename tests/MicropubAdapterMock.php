@@ -6,6 +6,10 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Taproot\Micropub\MicropubAdapter;
 
+// Callbacks can legitimately return null, so resolve() returns a special value to indicate
+// that the callback isn’t “implemented” at all.
+const CALLBACK_NOT_IMPLEMENTED = 999999999999999;
+
 /**
  * Micropub Adapter Mock
  * 
@@ -26,6 +30,7 @@ class MicropubAdapterMock extends MicropubAdapter {
 				return $this->callbackResponses[$callback];
 			}
 		}
+		return CALLBACK_NOT_IMPLEMENTED;
 	}
 
 	public function __construct(array $callbackResponses) {
@@ -42,7 +47,7 @@ class MicropubAdapterMock extends MicropubAdapter {
 
 	public function extensionCallback(ServerRequestInterface $request) {
 		$r = $this->resolve('extensionCallback', [$request]);
-		if ($r !== null) {
+		if ($r !== CALLBACK_NOT_IMPLEMENTED) {
 			return $r;
 		}
 		
@@ -51,7 +56,7 @@ class MicropubAdapterMock extends MicropubAdapter {
 
 	public function configurationQueryCallback(array $params) {
 		$r = $this->resolve('configurationQueryCallback', [$params]);
-		if ($r !== null) {
+		if ($r !== CALLBACK_NOT_IMPLEMENTED) {
 			return $r;
 		}
 		
@@ -60,7 +65,7 @@ class MicropubAdapterMock extends MicropubAdapter {
 
 	public function sourceQueryCallback(string $url, ?array $properties = null) {
 		$r = $this->resolve('sourceQueryCallback', [$url, $properties]);
-		if ($r !== null) {
+		if ($r !== CALLBACK_NOT_IMPLEMENTED) {
 			return $r;
 		}
 		
@@ -69,7 +74,7 @@ class MicropubAdapterMock extends MicropubAdapter {
 
 	public function deleteCallback(string $url) {
 		$r = $this->resolve('deleteCallback', [$url]);
-		if ($r !== null) {
+		if ($r !== CALLBACK_NOT_IMPLEMENTED) {
 			return $r;
 		}
 		
@@ -78,7 +83,7 @@ class MicropubAdapterMock extends MicropubAdapter {
 
 	public function undeleteCallback(string $url) {
 		$r = $this->resolve('undeleteCallback', [$url]);
-		if ($r !== null) {
+		if ($r !== CALLBACK_NOT_IMPLEMENTED) {
 			return $r;
 		}
 		
@@ -87,7 +92,7 @@ class MicropubAdapterMock extends MicropubAdapter {
 
 	public function updateCallback(string $url, array $actions) {
 		$r = $this->resolve('updateCallback', [$url, $actions]);
-		if ($r !== null) {
+		if ($r !== CALLBACK_NOT_IMPLEMENTED) {
 			return $r;
 		}
 		
@@ -96,7 +101,7 @@ class MicropubAdapterMock extends MicropubAdapter {
 
 	public function createCallback(array $data, array $uploadedFiles) {
 		$r = $this->resolve('createCallback', [$data, $uploadedFiles]);
-		if ($r !== null) {
+		if ($r !== CALLBACK_NOT_IMPLEMENTED) {
 			return $r;
 		}
 		
@@ -105,7 +110,7 @@ class MicropubAdapterMock extends MicropubAdapter {
 
 	public function mediaEndpointCallback(UploadedFileInterface $file) {
 		$r = $this->resolve('mediaEndpointCallback', [$file]);
-		if ($r !== null) {
+		if ($r !== CALLBACK_NOT_IMPLEMENTED) {
 			return $r;
 		}
 		
@@ -114,7 +119,7 @@ class MicropubAdapterMock extends MicropubAdapter {
 
 	public function mediaEndpointExtensionCallback(ServerRequestInterface $request) {
 		$r = $this->resolve('mediaEndpointExtensionCallback', [$request]);
-		if ($r !== null) {
+		if ($r !== CALLBACK_NOT_IMPLEMENTED) {
 			return $r;
 		}
 		

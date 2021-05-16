@@ -578,12 +578,17 @@ abstract class MicropubAdapter {
 						return $this->toResponse($updateResult);
 					}
 				}
+
+				// An unknown action was provided. Return invalid_request.
+				$logger->error('An unknown action parameter was provided.', $parsedBody);
+				return $this->toResponse('invalid_request');
 			}
 
 			// Assume that the request is a Create request.
 			// If we’re dealing with an x-www-form-urlencoded or multipart/form-data request,
 			// normalise form data to match JSON structure.
 			if (!$jsonRequest) {
+				$logger->info('Normalizing URL-encoded data into canonical JSON format.');
 				$parsedBody = normalizeUrlencodedCreateRequest($parsedBody);
 			}
 
@@ -599,7 +604,8 @@ abstract class MicropubAdapter {
 		}
 		
 		// Request method was something other than GET or POST.
-		return $this->toResponse('invalid_request');
+		$logger->error('The request had a method other than POST or GET.', ['method' => $request->getMethod()]);
+			return $this->toResponse('invalid_request');
 	}
 
 	/**
@@ -658,7 +664,6 @@ abstract class MicropubAdapter {
 
 		// Look for the presence of an uploaded file called 'file'
 		if (array_key_exists('file', $request->getUploadedFiles())) {
-			// This is most probably a media endpoint request.
 			$mediaCallbackResult = $this->mediaEndpointCallback($request->getUploadedFiles()['file']);
 
 			if ($mediaCallbackResult) {

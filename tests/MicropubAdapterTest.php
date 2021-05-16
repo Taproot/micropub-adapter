@@ -3,9 +3,9 @@
 namespace Taproot\Micropub\Tests;
 
 use DateTime;
-use Nyholm\Psr7\Request;
-use Nyholm\Psr7\ServerRequest;
 use Nyholm\Psr7\Response;
+use Nyholm\Psr7\ServerRequest;
+use Nyholm\Psr7\UploadedFile;
 use PHPUnit\Framework\TestCase;
 
 final class MicropubAdapterTest extends TestCase {
@@ -22,8 +22,18 @@ final class MicropubAdapterTest extends TestCase {
 		];
 	}
 
-	public function makeRequest($method='POST') {
-		return new ServerRequest($method, '/mp', ['authorization' => 'Bearer 12345678']);
+	public function makeRequest($method='POST', $body=null) {
+		return new ServerRequest($method, '/mp', [
+			'authorization' => 'Bearer 12345678',
+			'content-type' => 'x-www-form-urlencoded'
+		]);
+	}
+
+	public function makeJsonRequest($body) {
+		return new ServerRequest('POST', '/mp', [
+			'authorization' => 'Bearer 12345678',
+			'content-type' => 'application/json'
+		], json_encode($body));
 	}
 
 	public function testReturnsUnauthorizedWhenRequestHasNoAccessToken() {
@@ -311,6 +321,235 @@ final class MicropubAdapterTest extends TestCase {
 		]);
 		$r = $mp->handleRequest($this->makeRequest()->withParsedBody([
 			'action' => 'update'
+		]));
+
+		$this->assertEquals(400, $r->getStatusCode());
+	}
+
+	public function testSuccessfulUpdate() {
+		$url = 'https://example.com/post';
+		$updates = ['replace' => ['content' => 'test']];
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken(),
+			'updateCallback' => function ($u, $as) use ($url, $updates) {
+				$this->assertEquals($url, $u);
+				$this->assertEquals($updates['replace'], $as['replace']);
+				return true;
+			}
+		]);
+		$r = $mp->handleRequest($this->makeJsonRequest(array_merge([
+			'action' => 'update',
+			'url' => $url
+		], $updates)));
+
+		$this->assertEquals(204, $r->getStatusCode());
+	}
+
+	public function testSuccessfulUpdateWithChangedUrlReturnsLocationHeader() {
+		$newUrl = 'https://example.com/post2';
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken(),
+			'updateCallback' => $newUrl
+		]);
+		$r = $mp->handleRequest($this->makeJsonRequest([
+			'action' => 'update',
+			'url' => 'https://example.com/post'
+		]));
+
+		$this->assertEquals(201, $r->getStatusCode());
+		$this->assertEquals($newUrl, $r->getHeaderLine('location'));
+	}
+
+	public function testUpdateInvalidScopeReturnsError() {
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken(),
+			'updateCallback' => 'insufficient_scope'
+		]);
+		$r = $mp->handleRequest($this->makeJsonRequest([
+			'action' => 'update',
+			'url' => 'https://example.com/post'
+		]));
+
+		$this->assertEquals(403, $r->getStatusCode());
+	}
+
+	public function testPostRequestWithUnknownActionReturnsError() {
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken()
+		]);
+		$r = $mp->handleRequest($this->makeJsonRequest([
+			'action' => 'banana'
+		]));
+
+		$this->assertEquals(400, $r->getStatusCode());
+	}
+
+	public function testUrlEncodedCreateRequestIsNormalizedToMf2Json() {
+		$url = 'https://example.com/post';
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken(),
+			'createCallback' => function ($d, $f) use ($url) {
+				$expectedData = [
+					'type' => ['h-entry'],
+					'properties' => [
+						'content' => ['Hello world!'],
+						'category' => ['category1', 'category2']
+					]
+				];
+				$this->assertEquals($expectedData, $d);
+				$this->assertEquals(['photo' => 'DUMMY_UPLOADED_FILE'], $f);
+				return $url;
+			}
+		]);
+
+		$r = $mp->handleRequest($this->makeRequest()->withParsedBody([
+			'content' => 'Hello world!',
+			'category[]' => ['category1', 'category2']
+		])->withUploadedFiles(['photo' => 'DUMMY_UPLOADED_FILE']));
+		
+		$this->assertEquals(201, $r->getStatusCode());
+		$this->assertEquals($url, $r->getHeaderLine('location'));
+	}
+
+	public function testHParameterIsCorrectlyUsedAsTypeProperty() {
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken(),
+			'createCallback' => function ($d, $f) {
+				$expectedData = [
+					'type' => ['h-measure'],
+					'properties' => [
+						'num' => ['70.4'],
+						'unit' => ['kg']
+					]
+				];
+				$this->assertEquals($expectedData, $d);
+				return 'https://example.com/post';
+			}
+		]);
+		$r = $mp->handleRequest($this->makeRequest()->withParsedBody([
+			'h' => 'measure',
+			'num' => '70.4',
+			'unit' => 'kg'
+		]));
+
+		$this->assertEquals(201, $r->getStatusCode());
+	}
+
+	public function testCreateCallbackHandlesJsonRequest() {
+		$requestBody = [
+			'type' => ['h-entry'],
+			'properties' => [
+				'content' => ['Hello world!']
+			]
+		];
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken(),
+			'createCallback' => function ($d, $f) use ($requestBody) {
+				$this->assertEquals($requestBody, $d);
+				return 'https://example.com/post';
+			}
+		]);
+		$r = $mp->handleRequest($this->makeJsonRequest($requestBody));
+		
+		$this->assertEquals(201, $r->getStatusCode());
+	}
+
+	public function testCreateCallbackInsufficientScopeError() {
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken(),
+			'createCallback' => 'insufficient_scope'
+		]);
+		$r = $mp->handleRequest($this->makeRequest()->withParsedBody(['h' => 'entry', 'content' => 'blah']));
+
+		$this->assertEquals(403, $r->getStatusCode());
+	}
+
+	public function testMethodOtherThanGetOrPostReturnErrors() {
+		$mp = new MicropubAdapterMock(['verifyAccessTokenCallback' => $this->makeAccessToken()]);
+		$r = $mp->handleRequest($this->makeRequest('PUT'));
+		
+		$this->assertEquals(400, $r->getStatusCode());
+	}
+
+	// Media Endpoint Tests
+	public function testMediaEndpointReturnsUnauthorizedWhenRequestHasNoAccessToken() {
+		$mp = new MicropubAdapterMock(['verifyAccessTokenCallback' => false]);
+		$response = $mp->handleMediaEndpointRequest(new ServerRequest('POST', '/mp'));
+
+		$this->assertEquals(401, $response->getStatusCode(), 'The response should have a 401 status code.');
+	}
+
+	public function testMediaEndpointShortCircuitsResponseFromAccessTokenCallback() {
+		$resp = new Response(400);
+		$mp = new MicropubAdapterMock(['verifyAccessTokenCallback' => $resp]);
+		$r = $mp->handleMediaEndpointRequest($this->makeRequest());
+		$this->assertSame($resp, $r);
+	}
+
+	public function testMediaEndpointInvalidAccessTokenError() {
+		$mp = new MicropubAdapterMock(['verifyAccessTokenCallback' => false]);
+		$r = $mp->handleMediaEndpointRequest($this->makeRequest());
+		$this->assertEquals(403, $r->getStatusCode());
+	}
+
+	public function testMediaEndpointExtensionCallback() {
+		$resp = new Response();
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken(),
+			'mediaEndpointExtensionCallback' => $resp
+		]);
+		$r = $mp->handleMediaEndpointRequest($this->makeRequest());
+
+		$this->assertSame($resp, $r);
+	}
+
+	public function testMediaEndpointReturnsErrorForNonPostRequest() {
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken(),
+			'mediaEndpointCallback' => function ($f) {
+				$this->fail();
+			}
+		]);
+		$r = $mp->handleMediaEndpointRequest($this->makeRequest('GET'));
+		
+		$this->assertEquals(400, $r->getStatusCode());
+	}
+
+	public function testMediaEndpointHandlesSuccessfulRequest() {
+		$url = 'https://example.com/img.png';
+		$uploadedFile = new UploadedFile('php://input', 1000, 0);
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken(),
+			'mediaEndpointCallback' => function ($f) use ($url, $uploadedFile) {
+				$this->assertSame($f, $uploadedFile);
+				return $url;
+			}
+		]);
+		$r = $mp->handleMediaEndpointRequest($this->makeRequest()->withUploadedFiles(['file' => $uploadedFile]));
+
+		$this->assertEquals(201, $r->getStatusCode());
+		$this->assertEquals($url, $r->getHeaderLine('location'));
+	}
+
+	public function testMediaEndpointHandlesInsufficientScopeError() {
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken(),
+			'mediaEndpointCallback' => 'insufficient_scope'
+		]);
+		$r = $mp->handleMediaEndpointRequest($this->makeRequest()->withUploadedFiles([
+			'file' => new UploadedFile('php://input', 1000, 0)
+		]));
+
+		$this->assertEquals(403, $r->getStatusCode());
+	}
+
+	public function testMediaEndpointReturnsErrorOnInvalidRequest() {
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken(),
+			'mediaEndpointCallback' => 'insufficient_scope'
+		]);
+		$r = $mp->handleMediaEndpointRequest($this->makeRequest()->withUploadedFiles([
+			'not_the_right_key' => new UploadedFile('php://input', 1000, 0)
 		]));
 
 		$this->assertEquals(400, $r->getStatusCode());

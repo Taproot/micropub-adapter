@@ -18,7 +18,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Taproot\\Micropub\\MicropubAdapter",
             "name": "MicropubAdapter",
-            "summary": "Abstract\u0020Micropub\u0020Adapter\u0020Superclass",
+            "summary": "Micropub\u0020Adapter\u0020Abstract\u0020Superclass",
             "url": "classes/Taproot-Micropub-MicropubAdapter.html"
         },                {
             "fqsen": "\\Taproot\\Micropub\\MicropubAdapter\u003A\u003AverifyAccessTokenCallback\u0028\u0029",

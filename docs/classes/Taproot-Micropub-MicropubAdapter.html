@@ -89,24 +89,86 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">31</span>
+    <span class="phpdocumentor-element-found-in__line">75</span>
 </aside>
 
-            <p class="phpdocumentor-summary">Abstract Micropub Adapter Superclass</p>
+            <p class="phpdocumentor-summary">Micropub Adapter Abstract Superclass</p>
 
-    <section class="phpdocumentor-description"><p>Subclass this class, implementing the various *Callback methods to handle different
+    <section class="phpdocumentor-description"><p>Subclass this class and implement the various <code class="prettyprint">*Callback()</code> methods to handle different
 types of micropub request.</p>
-<p>Subclasses <strong>must</strong> implement abstract callback methods in order to have a functional
-micropub endpoint. All other callback methods are optional, and their functionality
-is enabled if a subclass implements them.</p>
+<p>Then, handling a micropub request is as simple as</p>
+<pre class="prettyprint"><code class="prettyprint">$mp = new YourMicropubAdapter();
+return $mp-&gt;handleRequest($request);
+</code></pre>
+<p>The same goes for a media endpoint:</p>
+<pre class="prettyprint"><code class="prettyprint">return $mp-&gt;handleMediaEndpointRequest($request);
+</code></pre>
+<p>Subclasses <strong>must</strong> implement the abstract callback method <code class="prettyprint">verifyAccessToken()</code> in order
+to have a functional micropub endpoint. All other callback methods are optional, and
+their functionality is enabled if a subclass implements them. Feel free to define your own
+constructor, and make any implementation-specific objects available to callbacks by storing
+them as properties.</p>
 <p>Each callback is passed data corresponding to the type of micropub request dispatched
-to it, but can also access the original request via the named $request parameter.
-Each callback return data in a format defined by the callback, which will be
-converted into the appropriate HTTP Response. Optionally, a callback may short-circuit
-the conversion by returning a HTTP Response, which will be returned by handleRequest().</p>
+to it, but can also access the original request via <code class="prettyprint">$this-&gt;request</code>. Data about the
+currently authenticated user is available in <code class="prettyprint">$this-&gt;user</code>.</p>
+<p>Each callback return data in a format defined by the callback, which will be
+converted into the appropriate HTTP Response. Returning an instance of <code class="prettyprint">ResponseInterface</code>
+from a callback will cause that response to immediately be returned unchanged. Most callbacks
+will also automatically convert an array return value into a JSON response, and will convert
+the following string error codes into properly formatted micropub error responses:</p>
+<ul>
+<li>
+<code class="prettyprint">'invalid_request'</code>
+</li>
+<li>
+<code class="prettyprint">'insufficient_scope'</code>
+</li>
+<li>
+<code class="prettyprint">'unauthorized'</code>
+</li>
+<li>
+<code class="prettyprint">'forbidden'</code>
+</li>
+</ul>
+<p>In practise, you’ll mostly be returning the first two, as the others are handled automatically.</p>
+<p>MicropubAdapter <strong>does not handle any authorization or permissions</strong>, as which users and
+scopes have what permissions depends on your implementation. It’s up to you to confirm that
+the current access token has sufficient scope and permissions to carry out any given action
+within your callback, and return <code class="prettyprint">'insufficient_scope'</code> or your own custom instance of
+<code class="prettyprint">ResponseInterface</code>.</p>
+<p>Most callbacks halt execution, but some are optional. Returning a falsy value from these
+optional callbacks continues execution uninterrupted. This is usually to allow you to pre-
+empt standard micropub handling and implement custom extensions.</p>
+<p>MicropubAdapter works with PSR-7 HTTP Interfaces. Specifically, expects an object implementing
+<code class="prettyprint">ServerRequestInterface</code>, and will return an object implemeting <code class="prettyprint">ResponseInterface</code>. If you
+want to return responses from your callbacks, you’re free to use any suitable implementation.
+For internally-generated responses, <code class="prettyprint">Nyholm\Psr7\Response</code> is used.</p>
+<p>If you’re not using a framework which works with PSR-7 objects, you’ll have to convert
+whatever request data you have into something implementing PSR-7 <code class="prettyprint">ServerRequestInterface</code>,
+and convert the returned <code class="prettyprint">ResponseInterface</code>s to something you can work with.</p>
 </section>
 
 
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">link</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                                        <a class="phpdocumentor-tag-link" href="https://micropub.spec.indieweb.org/"> https://micropub.spec.indieweb.org/ </a>
+                    
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">link</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                                        <a class="phpdocumentor-tag-link" href="https://indieweb.org/micropub"> https://indieweb.org/micropub </a>
+                    
+                                    </dd>
+                        </dl>
 
 
 
@@ -273,7 +335,7 @@ the conversion by returning a HTTP Response, which will be returned by handleReq
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">51</span>
+    <span class="phpdocumentor-element-found-in__line">95</span>
 </aside>
 
     
@@ -315,7 +377,7 @@ the conversion by returning a HTTP Response, which will be returned by handleReq
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">46</span>
+    <span class="phpdocumentor-element-found-in__line">90</span>
 </aside>
 
     
@@ -346,7 +408,7 @@ the conversion by returning a HTTP Response, which will be returned by handleReq
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">41</span>
+    <span class="phpdocumentor-element-found-in__line">85</span>
 </aside>
 
     
@@ -377,7 +439,7 @@ the conversion by returning a HTTP Response, which will be returned by handleReq
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">36</span>
+    <span class="phpdocumentor-element-found-in__line">80</span>
 </aside>
 
     
@@ -412,7 +474,7 @@ the conversion by returning a HTTP Response, which will be returned by handleReq
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">149</span>
+    <span class="phpdocumentor-element-found-in__line">193</span>
 </aside>
 
         <p class="phpdocumentor-summary">Configuration Query Callback</p>
@@ -496,7 +558,7 @@ return just that.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">275</span>
+    <span class="phpdocumentor-element-found-in__line">319</span>
 </aside>
 
         <p class="phpdocumentor-summary">Create Callback</p>
@@ -577,7 +639,7 @@ a HTTP 201 success response, or your own ResponseInterface.</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">193</span>
+    <span class="phpdocumentor-element-found-in__line">237</span>
 </aside>
 
         <p class="phpdocumentor-summary">Delete Callback</p>
@@ -644,7 +706,7 @@ an array with <code class="prettyprint">'error'</code> and <code class="prettypr
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">110</span>
+    <span class="phpdocumentor-element-found-in__line">154</span>
 </aside>
 
         <p class="phpdocumentor-summary">Micropub Extension Callback</p>
@@ -709,7 +771,7 @@ and the returned value is converted into a response and returned.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">576</span>
+    <span class="phpdocumentor-element-found-in__line">620</span>
 </aside>
 
         <p class="phpdocumentor-summary">Handle Media Endpoint Request</p>
@@ -757,7 +819,7 @@ for use within callbacks.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">363</span>
+    <span class="phpdocumentor-element-found-in__line">407</span>
 </aside>
 
         <p class="phpdocumentor-summary">Handle Micropub Request</p>
@@ -807,7 +869,7 @@ returned from <code class="prettyprint">verifyAccessTokenCallback()</code> for u
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">309</span>
+    <span class="phpdocumentor-element-found-in__line">353</span>
 </aside>
 
         <p class="phpdocumentor-summary">Media Endpoint Callback</p>
@@ -883,7 +945,7 @@ your own elsewhere, simply ignore this method, resulting in its default no-op be
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">330</span>
+    <span class="phpdocumentor-element-found-in__line">374</span>
 </aside>
 
         <p class="phpdocumentor-summary">Micropub Media Endpoint Extension Callback</p>
@@ -948,7 +1010,7 @@ and the returned value is converted into a response and returned.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">169</span>
+    <span class="phpdocumentor-element-found-in__line">213</span>
 </aside>
 
         <p class="phpdocumentor-summary">Source Query Callback</p>
@@ -1021,7 +1083,7 @@ correctly-formatted error response.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">650</span>
+    <span class="phpdocumentor-element-found-in__line">694</span>
 </aside>
 
         <p class="phpdocumentor-summary">To Response</p>
@@ -1076,7 +1138,7 @@ without alteration.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">219</span>
+    <span class="phpdocumentor-element-found-in__line">263</span>
 </aside>
 
         <p class="phpdocumentor-summary">Undelete Callback</p>
@@ -1146,7 +1208,7 @@ undeletion caused the post’s URL to change.</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">246</span>
+    <span class="phpdocumentor-element-found-in__line">290</span>
 </aside>
 
         <p class="phpdocumentor-summary">Update Callback</p>
@@ -1225,7 +1287,7 @@ undeletion caused the post’s URL to change.</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">91</span>
+    <span class="phpdocumentor-element-found-in__line">135</span>
 </aside>
 
         <p class="phpdocumentor-summary">Verify Access Token Callback</p>
@@ -1300,7 +1362,7 @@ will return unchanged.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/MicropubAdapter.php"><a href="files/src-micropubadapter.html"><abbr title="src/MicropubAdapter.php">MicropubAdapter.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">343</span>
+    <span class="phpdocumentor-element-found-in__line">387</span>
 </aside>
 
         <p class="phpdocumentor-summary">Get Logger</p>

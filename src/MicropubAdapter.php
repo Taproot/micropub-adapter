@@ -13,20 +13,64 @@ use Psr\Log\NullLogger;
 const MICROPUB_ERROR_CODES = ['invalid_request', 'unauthorized', 'insufficient_scope', 'forbidden'];
 
 /**
- * Abstract Micropub Adapter Superclass
+ * Micropub Adapter Abstract Superclass
  * 
- * Subclass this class, implementing the various *Callback methods to handle different 
+ * Subclass this class and implement the various `*Callback()` methods to handle different 
  * types of micropub request.
  * 
- * Subclasses **must** implement abstract callback methods in order to have a functional
- * micropub endpoint. All other callback methods are optional, and their functionality
- * is enabled if a subclass implements them.
+ * Then, handling a micropub request is as simple as 
+ *     
+ *     $mp = new YourMicropubAdapter();
+ *     return $mp->handleRequest($request);
+ * 
+ * The same goes for a media endpoint:
+ * 
+ *     return $mp->handleMediaEndpointRequest($request);
+ * 
+ * Subclasses **must** implement the abstract callback method `verifyAccessToken()` in order
+ * to have a functional micropub endpoint. All other callback methods are optional, and 
+ * their functionality is enabled if a subclass implements them. Feel free to define your own
+ * constructor, and make any implementation-specific objects available to callbacks by storing
+ * them as properties.
  * 
  * Each callback is passed data corresponding to the type of micropub request dispatched
- * to it, but can also access the original request via the named $request parameter.
+ * to it, but can also access the original request via `$this->request`. Data about the
+ * currently authenticated user is available in `$this->user`.
+ * 
  * Each callback return data in a format defined by the callback, which will be 
- * converted into the appropriate HTTP Response. Optionally, a callback may short-circuit
- * the conversion by returning a HTTP Response, which will be returned by handleRequest().
+ * converted into the appropriate HTTP Response. Returning an instance of `ResponseInterface`
+ * from a callback will cause that response to immediately be returned unchanged. Most callbacks
+ * will also automatically convert an array return value into a JSON response, and will convert
+ * the following string error codes into properly formatted micropub error responses:
+ * 
+ * * `'invalid_request'`
+ * * `'insufficient_scope'`
+ * * `'unauthorized'`
+ * * `'forbidden'`
+ * 
+ * In practise, you’ll mostly be returning the first two, as the others are handled automatically.
+ * 
+ * MicropubAdapter **does not handle any authorization or permissions**, as which users and
+ * scopes have what permissions depends on your implementation. It’s up to you to confirm that
+ * the current access token has sufficient scope and permissions to carry out any given action
+ * within your callback, and return `'insufficient_scope'` or your own custom instance of
+ * `ResponseInterface`.
+ * 
+ * Most callbacks halt execution, but some are optional. Returning a falsy value from these 
+ * optional callbacks continues execution uninterrupted. This is usually to allow you to pre-
+ * empt standard micropub handling and implement custom extensions.
+ * 
+ * MicropubAdapter works with PSR-7 HTTP Interfaces. Specifically, expects an object implementing
+ * `ServerRequestInterface`, and will return an object implemeting `ResponseInterface`. If you 
+ * want to return responses from your callbacks, you’re free to use any suitable implementation.
+ * For internally-generated responses, `Nyholm\Psr7\Response` is used.
+ * 
+ * If you’re not using a framework which works with PSR-7 objects, you’ll have to convert 
+ * whatever request data you have into something implementing PSR-7 `ServerRequestInterface`,
+ * and convert the returned `ResponseInterface`s to something you can work with.
+ * 
+ * @link https://micropub.spec.indieweb.org/
+ * @link https://indieweb.org/micropub
  */
 abstract class MicropubAdapter {
 

@@ -455,9 +455,9 @@ abstract class MicropubAdapter {
 
 					// Normalize properties([]) paramter.
 					if (array_key_exists('properties[]', $queryParams)) {
-						$sourceProperties = $q['properties[]'];
+						$sourceProperties = $queryParams['properties[]'];
 					} elseif (array_key_exists('properties', $queryParams)) {
-						$sourceProperties = [$q['properties']];
+						$sourceProperties = [$queryParams['properties']];
 					} else {
 						$sourceProperties = null;
 					}
@@ -488,7 +488,7 @@ abstract class MicropubAdapter {
 					$configQueryResult = $this->configurationQueryCallback($queryParams);
 					if ($configQueryResult instanceof ResponseInterface) {
 						return $configQueryResult; // Short-circuit, assume that the response from q=config will suffice for q=syndicate-to.
-					} elseif (is_array($configQueryResult and array_key_exists('syndicate-to', $configQueryResult))) {
+					} elseif (is_array($configQueryResult) and array_key_exists('syndicate-to', $configQueryResult)) {
 						return new Response(200, ['content-type' => 'application/json'], json_encode([
 							'syndicate-to' => $configQueryResult['syndicate-to']
 						]));
@@ -717,7 +717,7 @@ abstract class MicropubAdapter {
 			}
 			$resultOrResponse = json_encode($resultOrResponse);
 		}
-		return new ResponseInterface($status, ['content-type' => 'json'], $resultOrResponse);
+		return new Response($status, ['content-type' => 'application/json'], $resultOrResponse);
 	}
 }
 

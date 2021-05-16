@@ -6,9 +6,28 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Taproot\Micropub\MicropubAdapter;
 
+/**
+ * Micropub Adapter Mock
+ * 
+ * A barebones subclass of MicropubAdapter used for testing.
+ * 
+ * Each callback method returns the value under the same key as it’s method name within
+ * `$this->callbackResponses` if present, otherwise it calls the superclass method to
+ * simulate the method not being implemented.
+ */
 class MicropubAdapterMock extends MicropubAdapter {
 	public $callbackResponses;
 	
+	private function resolve($callback, $args) {
+		if (array_key_exists($callback, $this->callbackResponses)) {
+			if (is_callable($this->callbackResponses[$callback])) {
+				return call_user_func_array($this->callbackResponses[$callback], $args);
+			} else {
+				return $this->callbackResponses[$callback];
+			}
+		}
+	}
+
 	public function __construct(array $callbackResponses) {
 		if (!array_key_exists('verifyAccessTokenCallback', $callbackResponses)) {
 			die('$callbackResponses MUST contain a response for verifyAccessTokenCallback.');
@@ -22,72 +41,81 @@ class MicropubAdapterMock extends MicropubAdapter {
 	}
 
 	public function extensionCallback(ServerRequestInterface $request) {
-		if (array_key_exists('extensionCallback', $this->callbackResponses)) {
-			return $this->callbackResponses['extensionCallback'];
+		$r = $this->resolve('extensionCallback', [$request]);
+		if ($r !== null) {
+			return $r;
 		}
 		
 		return parent::extensionCallback($request);
 	}
 
 	public function configurationQueryCallback(array $params) {
-		if (array_key_exists('configurationQueryCallback', $this->callbackResponses)) {
-			return $this->callbackResponses['configurationQueryCallback'];
+		$r = $this->resolve('configurationQueryCallback', [$params]);
+		if ($r !== null) {
+			return $r;
 		}
 		
 		return parent::configurationQueryCallback($params);
 	}
 
 	public function sourceQueryCallback(string $url, ?array $properties = null) {
-		if (array_key_exists('sourceQueryCallback', $this->callbackResponses)) {
-			return $this->callbackResponses['sourceQueryCallback'];
+		$r = $this->resolve('sourceQueryCallback', [$url, $properties]);
+		if ($r !== null) {
+			return $r;
 		}
 		
 		return parent::sourceQueryCallback($url, $properties);
 	}
 
 	public function deleteCallback(string $url) {
-		if (array_key_exists('deleteCallback', $this->callbackResponses)) {
-			return $this->callbackResponses['deleteCallback'];
+		$r = $this->resolve('deleteCallback', [$url]);
+		if ($r !== null) {
+			return $r;
 		}
 		
 		return parent::deleteCallback($url);
 	}
 
 	public function undeleteCallback(string $url) {
-		if (array_key_exists('undeleteCallback', $this->callbackResponses)) {
-			return $this->callbackResponses['undeleteCallback'];
+		$r = $this->resolve('undeleteCallback', [$url]);
+		if ($r !== null) {
+			return $r;
 		}
 		
 		return parent::undeleteCallback($url);
 	}
 
 	public function updateCallback(string $url, array $actions) {
-		if (array_key_exists('updateCallback', $this->callbackResponses)) {
-			return $this->callbackResponses['updateCallback'];
+		$r = $this->resolve('updateCallback', [$url, $actions]);
+		if ($r !== null) {
+			return $r;
 		}
 		
 		return parent::updateCallback($url, $actions);
 	}
 
 	public function createCallback(array $data, array $uploadedFiles) {
-		if (array_key_exists('createCallback', $this->callbackResponses)) {
-			return $this->callbackResponses['createCallback'];
+		$r = $this->resolve('createCallback', [$data, $uploadedFiles]);
+		if ($r !== null) {
+			return $r;
 		}
 		
 		return parent::createCallback($data, $uploadedFiles);
 	}
 
 	public function mediaEndpointCallback(UploadedFileInterface $file) {
-		if (array_key_exists('mediaEndpointCallback', $this->callbackResponses)) {
-			return $this->callbackResponses['mediaEndpointCallback'];
+		$r = $this->resolve('mediaEndpointCallback', [$file]);
+		if ($r !== null) {
+			return $r;
 		}
 		
 		return parent::mediaEndpointCallback($file);
 	}
 
 	public function mediaEndpointExtensionCallback(ServerRequestInterface $request) {
-		if (array_key_exists('mediaEndpointExtensionCallback', $this->callbackResponses)) {
-			return $this->callbackResponses['mediaEndpointExtensionCallback'];
+		$r = $this->resolve('mediaEndpointExtensionCallback', [$request]);
+		if ($r !== null) {
+			return $r;
 		}
 		
 		return parent::mediaEndpointExtensionCallback($request);

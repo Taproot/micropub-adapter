@@ -12,6 +12,11 @@ $app = AppFactory::create();
 
 $micropubAdapter = new ExampleMicropubAdapter();
 
+// Index
+$app->get('/', function (Request $request, Response $response) {
+	$response->getBody()->write('MicropubAdapter demo site.');
+});
+
 // Micropub Endpoint
 $app->any('/micropub', function (Request $request, Response $response) use ($micropubAdapter) {
 	return $micropubAdapter->handleRequest($request);

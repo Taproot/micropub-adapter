@@ -20,4 +20,4 @@ $app->any('/micropub', function (Request $request, Response $response) use ($mic
 // Micropub Media Endpoint
 $app->any('/media-endpoint', function (Request $request, Response $response) use ($micropubAdapter) {
 	return $micropubAdapter->handleMediaEndpointRequest($request);
-}); 
+});

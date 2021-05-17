@@ -6,7 +6,7 @@ use Nyholm\Psr7\Response;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use \Psr\Http\Message\UploadedFileInterface;
+use Psr\Http\Message\UploadedFileInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
@@ -77,17 +77,17 @@ abstract class MicropubAdapter {
 	/**
 	 * @property array $user The validated access_token, made available for use in callback methods.
 	 */
-	private $user;
+	public $user;
 
 	/**
 	 * @property RequestInterface $request The current request, made available for use in callback methods.
 	 */
-	private $request;
+	public $request;
 	
 	/**
 	 * @property LoggerInterface $logger The logger used by MicropubAdaptor for internal logging.
 	 */
-	private $logger;
+	public $logger;
 
 	/**
 	 * @property array $errorMessages An array mapping micropub and adapter-specific error codes to human-friendly descriptions.
@@ -124,7 +124,7 @@ abstract class MicropubAdapter {
 	 * to structure it however you want.
 	 * 
 	 * You can also short-circuit the micropub request handling by returning an
-	 * instance of \Psr\Http\Message\ResponseInterface, which handleRequest()
+	 * instance of ResponseInterface, which handleRequest()
 	 * will return unchanged.
 	 * 
 	 * @param string $token The Authentication: Bearer access token.
@@ -192,13 +192,15 @@ abstract class MicropubAdapter {
 	 */
 	public function configurationQueryCallback(array $params) {
 		// Default response: an empty JSON object.
-		return $this->toResponse('{}');
+		return $this->toResponse(null);
 	}
 
 	/**
 	 * Source Query Callback
 	 * 
-	 * Handle a GET q=source query. Return a microformats2 canonical JSON representation
+	 * Handle a GET q=source query.
+	 * 
+	 * The callback should return a microformats2 canonical JSON representation
 	 * of the post identified by $url, either as an array or as a ready-made ResponseInterface.
 	 * 
 	 * If the post identified by $url cannot be found, returning false will return a
@@ -221,8 +223,9 @@ abstract class MicropubAdapter {
 	/**
 	 * Delete Callback
 	 * 
-	 * Handle a POST action=delete request. Look for a post identified by the $url parameter.
-	 * 
+	 * Handle a POST action=delete request.
+   *
+	 * * Look for a post identified by the $url parameter. 
 	 * * If it doesn’t exist: return `false` or `'invalid_request'` as a shortcut for an
 	 *   HTTP 400 invalid_request response.
 	 * * If the current access token scope doesn’t permit deletion, return `'insufficient_scope'`,
@@ -271,7 +274,7 @@ abstract class MicropubAdapter {
 	/**
 	 * Update Callback
 	 * 
-	 * Handles a query with action=update.
+	 * Handles a POST action=update request.
 	 * 
 	 * * Look for a post identified by the $url parameter.
 	 * * If it doesn’t exist: return `false` or `'invalid_request'` as a shortcut for an
@@ -338,17 +341,17 @@ abstract class MicropubAdapter {
 	 * * On success, return either the URL of the created URL to be upgraded into 
 	 *   a HTTP 201 success response, or your own ResponseInterface.
 	 * 
-	 * If you don’t want a media endpoint, or want to implement
-	 * your own elsewhere, simply ignore this method, resulting in its default no-op behaviour.
-	 * 
 	 * @param UploadedFileInterface $file The file to upload
 	 * @return false|string|array|ResponseInterface Return a falsy value to continue handling the request, the URL of the uploaded file on success, a micropub error code to be upgraded into an error response, an array for a JSON response, or a ready-made ResponseInterface
 	 * @link https://micropub.spec.indieweb.org/#media-endpoint
 	 * @api
 	 */
 	public function mediaEndpointCallback(UploadedFileInterface $file) {
-		// Default implementation: return false to continue processing the request.
-		return false;
+		// Default implementation: not implemented.
+		return $this->toResponse([
+			'error' => 'invalid_request',
+			'error_description' => $this->errorMessages['not_implemented']
+		]);
 	}
 
 	/**
@@ -410,10 +413,7 @@ abstract class MicropubAdapter {
 		$accessToken = getAccessToken($request);
 		if ($accessToken === null) {
 			$logger->warning($this->errorMessages['unauthorized']);
-			return new Response(401, ['content-type' => 'application/json'], json_encode([
-				'error' => 'unauthorized',
-				'error_description' => $this->errorMessages['unauthorized']
-			]));
+			return $this->toResponse('unauthorized');
 		}
 
 		$accessTokenResult = $this->verifyAccessTokenCallback($accessToken);
@@ -426,10 +426,7 @@ abstract class MicropubAdapter {
 		} else {
 			// Log error, return not authorized response.
 			$logger->error($this->errorMessages['access_token_invalid']);
-			return new Response(403, ['content-type' => 'application/json'], json_encode([
-				'error' => 'forbidden',
-				'error_description' => $this->errorMessages['access_token_invalid']
-			]));
+			return $this->toResponse('forbidden');
 		}
 		
 		// Give subclasses an opportunity to pre-emptively handle any extension cases before moving on to
@@ -511,6 +508,12 @@ abstract class MicropubAdapter {
 				$parsedBody = json_decode($request->getBody()->getContents(), true);
 			} else {
 				$parsedBody = $request->getParsedBody();
+			}
+
+			// The rest of the code assumes that parsedBody is an array. If we don’t have an array by now,
+			// the request is invalid.
+			if (!is_array($parsedBody)) {
+				return $this->toResponse('invalid_request');
 			}
 			
 			// Check for action.
@@ -605,7 +608,7 @@ abstract class MicropubAdapter {
 		
 		// Request method was something other than GET or POST.
 		$logger->error('The request had a method other than POST or GET.', ['method' => $request->getMethod()]);
-			return $this->toResponse('invalid_request');
+		return $this->toResponse('invalid_request');
 	}
 
 	/**
@@ -692,7 +695,7 @@ abstract class MicropubAdapter {
 	 * @param int $status=200
 	 * @return ResponseInterface
 	 */
-	function toResponse($resultOrResponse, $status=200) {
+	private function toResponse($resultOrResponse, $status=200) {
 		if ($resultOrResponse instanceof ResponseInterface) {
 			return $resultOrResponse;
 		}

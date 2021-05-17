@@ -26,7 +26,7 @@ final class MicropubAdapterTest extends TestCase {
 		return new ServerRequest($method, '/mp', [
 			'authorization' => 'Bearer 12345678',
 			'content-type' => 'x-www-form-urlencoded'
-		]);
+		], $body);
 	}
 
 	public function makeJsonRequest($body) {
@@ -34,6 +34,35 @@ final class MicropubAdapterTest extends TestCase {
 			'authorization' => 'Bearer 12345678',
 			'content-type' => 'application/json'
 		], json_encode($body));
+	}
+
+	public function testAccessTokenIsExtractedFromHeaderCorrectly() {
+		$accessToken = '12345678';
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => function ($t) use ($accessToken) {
+				$this->assertEquals($accessToken, $t);
+				return false;
+			}
+		]);
+		$r = $mp->handleRequest(new ServerRequest('POST', '/mp', [
+			'authorization' => 'Bearer 12345678',
+			'content-type' => 'x-www-form-urlencoded'
+		]));
+		$this->assertEquals(403, $r->getStatusCode());
+	}
+
+	public function testAccessTokenIsExtractedFromRequestBody() {
+		$accessToken = '12345678';
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => function ($t) use ($accessToken) {
+				$this->assertEquals($accessToken, $t);
+				return false;
+			}
+		]);
+		$req = new ServerRequest('POST', '/mp', ['content-type' => 'x-www-form-urlencoded']);
+		$r = $mp->handleRequest($req->withParsedBody(['access_token' => $accessToken]));
+
+		$this->assertEquals(403, $r->getStatusCode());
 	}
 
 	public function testReturnsUnauthorizedWhenRequestHasNoAccessToken() {
@@ -56,15 +85,32 @@ final class MicropubAdapterTest extends TestCase {
 		$this->assertEquals(403, $r->getStatusCode());
 	}
 
-	public function testExtensionCallback() {
+	public function testExtensionCallbackAndTokenDataAvailable() {
 		$at = $this->makeAccessToken();
+		$req = $this->makeRequest();
 		$resp = new Response();
-		$mp = new MicropubAdapterMock([
-			'verifyAccessTokenCallback' => $at,
-			'extensionCallback' => $resp
-		]);
-		$r = $mp->handleRequest($this->makeRequest());
+		$mp = new MicropubAdapterMock(['verifyAccessTokenCallback' => $at]);
+		$mp->callbackResponses['extensionCallback'] = function ($r) use ($at, $req, $resp, $mp) {
+			$rProp = 'request';
+			$uProp = 'user';
+			$this->assertEquals($at, $mp->$uProp);
+			$this->assertEquals($req, $mp->$rProp);
+			return $resp;
+		};
+
+		$r = $mp->handleRequest($req);
 		$this->assertSame($resp, $r);
+	}
+
+	public function testDefaultConfigQueryResponse() {
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken()
+		]);
+		$r = $mp->handleRequest($this->makeRequest('GET')->withQueryParams(['q' => 'config']));
+
+		$this->assertEquals(200, $r->getStatusCode());
+		$this->assertEquals('application/json', $r->getHeaderLine('content-type'));
+		$this->assertJsonStringEqualsJsonString('{}', $r->getBody()->getContents());
 	}
 
 	public function testConfigQuery() {
@@ -81,6 +127,18 @@ final class MicropubAdapterTest extends TestCase {
 		$this->assertEquals('https://example.com/media-endpoint', $responseBody['media-endpoint']);
 	}
 
+	public function testDefaultSourceQueryReturnsNotImplementedError() {
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken()
+		]);
+		$r = $mp->handleRequest($this->makeRequest('GET')->withQueryParams([
+			'q' => 'source',
+			'url' => 'https://example.com/post'
+		]));
+
+		$this->assertEquals(400, $r->getStatusCode());
+	}
+
 	public function testSourceQueryReturnsErrorWithoutUrlParameter() {
 		$mp = new MicropubAdapterMock([
 			'verifyAccessTokenCallback' => $this->makeAccessToken(),
@@ -92,17 +150,20 @@ final class MicropubAdapterTest extends TestCase {
 	}
 
 	public function testSourceQueryWithoutProperties() {
+		$sourceData = [
+			'type' => 'h-entry',
+			'properties' => [
+				'name' => ['A Note'],
+				'url' => ['https://example.com/post']
+			]
+		];
+
 		$mp = new MicropubAdapterMock([
 			'verifyAccessTokenCallback' => $this->makeAccessToken(),
-			'sourceQueryCallback' => function ($url, $properties) {
+			'sourceQueryCallback' => function ($url, $properties) use ($sourceData) {
 				$this->assertNull($properties);
-				return [
-					'type' => 'h-entry',
-					'properties' => [
-						'name' => ['A Note'],
-						'url' => ['https://example.com/post']
-					]
-				];
+				$this->assertEquals($sourceData['properties']['url'][0], $url);
+				return $sourceData;
 			}
 		]);
 		$r = $mp->handleRequest($this->makeRequest('GET')->withQueryParams([
@@ -112,6 +173,7 @@ final class MicropubAdapterTest extends TestCase {
 
 		$this->assertEquals(200, $r->getStatusCode());
 		$this->assertEquals('application/json', $r->getHeaderLine('content-type'));
+		$this->assertJsonStringEqualsJsonString(json_encode($sourceData), $r->getBody()->getContents());
 	}
 
 	public function testSourceQueryWithSingleProperty() {
@@ -167,6 +229,7 @@ final class MicropubAdapterTest extends TestCase {
 			'sourceQueryCallback' => false
 		]);
 		$r = $mp->handleRequest($this->makeRequest('GET')->withQueryParams([
+			'q' => 'source',
 			'url' => 'https://example.com/post'
 		]));
 
@@ -218,7 +281,7 @@ final class MicropubAdapterTest extends TestCase {
 		$this->isEmpty($parsedResponse);
 	}
 
-	public function testReturnsInvalidRequestOnUnhandleableRequest() {
+	public function testReturnsInvalidRequestOnUnhandleableGetRequest() {
 		$mp = new MicropubAdapterMock([
 			'verifyAccessTokenCallback' => $this->makeAccessToken()
 		]);
@@ -227,9 +290,31 @@ final class MicropubAdapterTest extends TestCase {
 		$this->assertEquals(400, $r->getStatusCode());
 	}
 
-	public function testReturnsInvalidRequestOnDeleteRequestWithoutUrl() {
+	public function testReturnsInvalidResponseOnPostRequestWithoutParseableBody() {
 		$mp = new MicropubAdapterMock([
 			'verifyAccessTokenCallback' => $this->makeAccessToken()
+		]);
+		$r = $mp->handleRequest($this->makeRequest());
+
+		$this->assertEquals(400, $r->getStatusCode());
+	}
+
+	public function testDefaultDeleteQueryReturnsError() {
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken()
+		]);
+		$r = $mp->handleRequest($this->makeRequest()->withParsedBody([
+			'action' => 'delete',
+			'url' => 'https://example.com/post'
+		]));
+
+		$this->assertEquals(400, $r->getStatusCode());
+	}
+
+	public function testReturnsInvalidRequestOnDeleteRequestWithoutUrl() {
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken(),
+			'deleteCallback' => function ($url) { $this->fail(); }
 		]);
 		$r = $mp->handleRequest($this->makeRequest()->withParsedBody(['action' => 'delete']));
 
@@ -267,6 +352,30 @@ final class MicropubAdapterTest extends TestCase {
 		$this->assertEquals(403, $r->getStatusCode());
 		$this->assertEquals('application/json', $r->getHeaderLine('content-type'));
 		$this->assertEquals('insufficient_scope', $parsedBody['error']);
+	}
+
+	public function testDefaultUndeleteCallbackReturnsError() {
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken()
+		]);
+		$r = $mp->handleRequest($this->makeRequest()->withParsedBody([
+			'action' => 'undelete',
+			'url' => 'https://example.com/post'
+		]));
+
+		$this->assertEquals(400, $r->getStatusCode());
+	}
+
+	public function testReturnsErrorOnUndeleteRequestWithoutUrl() {
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken(),
+			'undeleteCallback' => function ($url) { $this->fail(); }
+		]);
+		$r = $mp->handleRequest($this->makeRequest()->withParsedBody([
+			'action' => 'undelete'
+		]));
+
+		$this->assertEquals(400, $r->getStatusCode());
 	}
 
 	public function testReturnsSuccessOnSuccessfulUndelete() {
@@ -314,12 +423,24 @@ final class MicropubAdapterTest extends TestCase {
 		$this->assertEquals(400, $r->getStatusCode());
 	}
 
+	public function testDefaultUpdateCallbackReturnsError() {
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken()
+		]);
+		$r = $mp->handleRequest($this->makeJsonRequest([
+			'action' => 'update',
+			'url' => 'https://example.com/post'
+		]));
+		
+		$this->assertEquals(400, $r->getStatusCode());
+	}
+
 	public function testReturnsErrorOnUpdateRequestWithoutUrlParameter() {
 		$mp = new MicropubAdapterMock([
 			'verifyAccessTokenCallback' => $this->makeAccessToken(),
 			'updateCallback' => function ($url, $actions) { $this->fail('Update requests without a URL parameter should not call updateCallback().'); }
 		]);
-		$r = $mp->handleRequest($this->makeRequest()->withParsedBody([
+		$r = $mp->handleRequest($this->makeJsonRequest([
 			'action' => 'update'
 		]));
 
@@ -379,6 +500,18 @@ final class MicropubAdapterTest extends TestCase {
 		]);
 		$r = $mp->handleRequest($this->makeJsonRequest([
 			'action' => 'banana'
+		]));
+
+		$this->assertEquals(400, $r->getStatusCode());
+	}
+
+	public function testDefaultCreateCallbackReturnsError() {
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken()
+		]);
+		$r = $mp->handleRequest($this->makeRequest()->withParsedBody([
+			'h' => 'entry',
+			'content' => 'everybody is good'
 		]));
 
 		$this->assertEquals(400, $r->getStatusCode());
@@ -512,6 +645,15 @@ final class MicropubAdapterTest extends TestCase {
 		]);
 		$r = $mp->handleMediaEndpointRequest($this->makeRequest('GET'));
 		
+		$this->assertEquals(400, $r->getStatusCode());
+	}
+
+	public function testDefaultMediaEndpointCallbackReturnsError() {
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken()
+		]);
+		$r = $mp->handleMediaEndpointRequest($this->makeRequest()->withUploadedFiles(['file' => new UploadedFile('php://input', 1000, 0)]));
+
 		$this->assertEquals(400, $r->getStatusCode());
 	}
 

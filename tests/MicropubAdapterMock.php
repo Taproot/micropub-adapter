@@ -42,7 +42,7 @@ class MicropubAdapterMock extends MicropubAdapter {
 	}
 
 	public function verifyAccessTokenCallback(string $token) {
-		return $this->callbackResponses['verifyAccessTokenCallback'];
+		return $this->resolve('verifyAccessTokenCallback', [$token]);
 	}
 
 	public function extensionCallback(ServerRequestInterface $request) {

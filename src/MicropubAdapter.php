@@ -108,24 +108,32 @@ abstract class MicropubAdapter {
 	/**
 	 * Verify Access Token Callback
 	 * 
-	 * Given an access token, verify it and return an array with user data if valid,
-	 * or `false` if invalid. The user data array will typically look something like
-	 * this:
+	 * Given an access token, attempt to verify it.
 	 * 
-	 *     [
-	 *       'me' => 'https://example.com',
-	 *       'client_id' => 'https://clientapp.example',
-	 *       'scope' => ['array', 'of', 'granted', 'scopes'],
-	 *       'date_issued' => \Datetime
-	 *     ]
+	 * * If it’s valid, return an array to be stored in `$this->user`, which typically looks
+	 *   something like this:
+	 *   
+	 *       [
+	 *         'me' => 'https://example.com',
+	 *         'client_id' => 'https://clientapp.example',
+	 *         'scope' => ['array', 'of', 'granted', 'scopes'],
+	 *         'date_issued' => \Datetime
+	 *       ]
+	 * * If the toke in invalid, return one of the following:
+	 *     * `false`, which will be converted into an appropriate error message.
+	 *     * `'forbidden'`, which will be converted into an appropriate error message.
+	 *     * An array to be converted into an error response, with the form:
+	 *       
+	 *           [
+	 *             'error': 'forbidden'
+	 *             'error_description': 'Your custom error description' 
+	 *           ]
+	 *     * Your own instance of `ResponseInterface`
+	 * 
 	 * 
 	 * MicropubAdapter treats the data as being opaque, and simply makes it
 	 * available to your callback methods for further processing, so you’re free
 	 * to structure it however you want.
-	 * 
-	 * You can also short-circuit the micropub request handling by returning an
-	 * instance of ResponseInterface, which handleRequest()
-	 * will return unchanged.
 	 * 
 	 * @param string $token The Authentication: Bearer access token.
 	 * @return array|string|false|ResponseInterface
@@ -204,7 +212,8 @@ abstract class MicropubAdapter {
 	 * of the post identified by $url, either as an array or as a ready-made ResponseInterface.
 	 * 
 	 * If the post identified by $url cannot be found, returning false will return a
-	 * correctly-formatted error response.
+	 * correctly-formatted error response. Alternatively, you can return a string micropub
+	 * error code (e.g. `'invalid_request'`) or your own instance of `ResponseInterface`.
 	 * 
 	 * @param string $url The URL of the post for which to return properties.
 	 * @param array|null $properties = null The list of properties to return (all if null)
@@ -342,7 +351,7 @@ abstract class MicropubAdapter {
 	 *   a HTTP 201 success response, or your own ResponseInterface.
 	 * 
 	 * @param UploadedFileInterface $file The file to upload
-	 * @return false|string|array|ResponseInterface Return a falsy value to continue handling the request, the URL of the uploaded file on success, a micropub error code to be upgraded into an error response, an array for a JSON response, or a ready-made ResponseInterface
+	 * @return string|array|ResponseInterface Return the URL of the uploaded file on success, a micropub error code to be upgraded into an error response, an array for a JSON response, or a ready-made ResponseInterface
 	 * @link https://micropub.spec.indieweb.org/#media-endpoint
 	 * @api
 	 */

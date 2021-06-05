@@ -16,7 +16,8 @@
     },
     "autoload-dev": {
         "files": [
-            "tests/MicropubAdapterMock.php"
+            "tests/MicropubAdapterMock.php",
+            "example/src/ExampleMicropubAdapter.php"
         ]
     },
     "minimum-stability": "dev",
@@ -27,6 +28,7 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^9",
-        "slim/slim": "4.x-dev"
+        "slim/slim": "4.x-dev",
+        "nyholm/psr7-server": "dev-master"
     }
 }

@@ -5,3 +5,5 @@ phpDocumentor.phar
 phpdoc.xml
 .phpdoc
 tests/coverage
+public_html
+deploy

@@ -6,7 +6,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 
-require __DIR__ . '../../../../vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 
 $app = AppFactory::create();
 
@@ -15,6 +15,7 @@ $micropubAdapter = new ExampleMicropubAdapter();
 // Index
 $app->get('/', function (Request $request, Response $response) {
 	$response->getBody()->write('MicropubAdapter demo site.');
+	return $response;
 });
 
 // Micropub Endpoint
@@ -26,3 +27,5 @@ $app->any('/micropub', function (Request $request, Response $response) use ($mic
 $app->any('/media-endpoint', function (Request $request, Response $response) use ($micropubAdapter) {
 	return $micropubAdapter->handleMediaEndpointRequest($request);
 });
+
+$app->run();

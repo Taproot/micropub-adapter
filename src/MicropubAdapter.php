@@ -514,7 +514,7 @@ abstract class MicropubAdapter {
 			
 			// Get a parsed body sufficient to determine the nature of the request.
 			if ($jsonRequest) {
-				$parsedBody = json_decode($request->getBody()->getContents(), true);
+				$parsedBody = json_decode((string) $request->getBody(), true);
 			} else {
 				$parsedBody = $request->getParsedBody();
 			}

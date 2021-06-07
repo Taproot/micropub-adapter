@@ -110,7 +110,7 @@ final class MicropubAdapterTest extends TestCase {
 
 		$this->assertEquals(200, $r->getStatusCode());
 		$this->assertEquals('application/json', $r->getHeaderLine('content-type'));
-		$this->assertJsonStringEqualsJsonString('{}', $r->getBody()->getContents());
+		$this->assertJsonStringEqualsJsonString('{}', (string) $r->getBody());
 	}
 
 	public function testConfigQuery() {
@@ -121,7 +121,7 @@ final class MicropubAdapterTest extends TestCase {
 			]
 		]);
 		$r = $mp->handleRequest($this->makeRequest('GET')->withQueryParams(['q' => 'config']));
-		$responseBody = json_decode($r->getBody()->getContents(), true);
+		$responseBody = json_decode((string) $r->getBody(), true);
 		
 		$this->assertEquals('application/json', $r->getHeaderLine('content-type'), 'q=config response must have Content-type: application/json');
 		$this->assertEquals('https://example.com/media-endpoint', $responseBody['media-endpoint']);
@@ -173,7 +173,7 @@ final class MicropubAdapterTest extends TestCase {
 
 		$this->assertEquals(200, $r->getStatusCode());
 		$this->assertEquals('application/json', $r->getHeaderLine('content-type'));
-		$this->assertJsonStringEqualsJsonString(json_encode($sourceData), $r->getBody()->getContents());
+		$this->assertJsonStringEqualsJsonString(json_encode($sourceData), (string) $r->getBody());
 	}
 
 	public function testSourceQueryWithSingleProperty() {
@@ -261,7 +261,7 @@ final class MicropubAdapterTest extends TestCase {
 		]);
 		$r = $mp->handleRequest($this->makeRequest('GET')->withQueryParams(['q' => 'syndicate-to']));
 		
-		$parsedResponse = json_decode($r->getBody()->getContents(), true);
+		$parsedResponse = json_decode((string) $r->getBody(), true);
 		$this->assertEquals(200, $r->getStatusCode());
 		$this->assertEquals('application/json', $r->getHeaderLine('content-type'));
 		$this->assertArrayHasKey('syndicate-to', $parsedResponse);
@@ -275,7 +275,7 @@ final class MicropubAdapterTest extends TestCase {
 		]);
 		$r = $mp->handleRequest($this->makeRequest('GET')->withQueryParams(['q' => 'syndicate-to']));
 		
-		$parsedResponse = json_decode($r->getBody()->getContents(), true);
+		$parsedResponse = json_decode((string) $r->getBody(), true);
 		$this->assertEquals(200, $r->getStatusCode());
 		$this->assertEquals('application/json', $r->getHeaderLine('content-type'));
 		$this->isEmpty($parsedResponse);
@@ -348,7 +348,7 @@ final class MicropubAdapterTest extends TestCase {
 			'url' => 'https://example.com/post'
 		]));
 
-		$parsedBody = json_decode($r->getBody()->getContents(), true);
+		$parsedBody = json_decode((string) $r->getBody(), true);
 		$this->assertEquals(403, $r->getStatusCode());
 		$this->assertEquals('application/json', $r->getHeaderLine('content-type'));
 		$this->assertEquals('insufficient_scope', $parsedBody['error']);

@@ -5,4 +5,5 @@ phpDocumentor.phar
 phpdoc.xml
 .phpdoc
 public_html
+example/data
 deploy

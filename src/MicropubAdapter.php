@@ -75,22 +75,22 @@ const MICROPUB_ERROR_CODES = ['invalid_request', 'unauthorized', 'insufficient_s
 abstract class MicropubAdapter {
 
 	/**
-	 * @property array $user The validated access_token, made available for use in callback methods.
+	 * @var array $user The validated access_token, made available for use in callback methods.
 	 */
 	public $user;
 
 	/**
-	 * @property RequestInterface $request The current request, made available for use in callback methods.
+	 * @var RequestInterface $request The current request, made available for use in callback methods.
 	 */
 	public $request;
 	
 	/**
-	 * @property LoggerInterface $logger The logger used by MicropubAdaptor for internal logging.
+	 * @var null|LoggerInterface $logger The logger used by MicropubAdaptor for internal logging.
 	 */
-	public $logger;
+	public ?LoggerInterface $logger;
 
 	/**
-	 * @property array $errorMessages An array mapping micropub and adapter-specific error codes to human-friendly descriptions.
+	 * @var string[] $errorMessages An array mapping micropub and adapter-specific error codes to human-friendly descriptions.
 	 */
 	private $errorMessages = [
 		// Built-in micropub error types
@@ -268,7 +268,7 @@ abstract class MicropubAdapter {
 	 *   undeletion caused the post’s URL to change.
 	 * 
 	 * @param string $url The URL of the post to be deleted.
-	 * @return string|true|array true on basic success, otherwise either an error string, or a URL if the undeletion caused the post’s location to change.
+	 * @return string|true|array|ResponseInterface true on basic success, otherwise either an error string, or a URL if the undeletion caused the post’s location to change.
 	 * @link https://micropub.spec.indieweb.org/#delete
 	 * @api
 	 */
@@ -393,7 +393,7 @@ abstract class MicropubAdapter {
 	 * @return \Psr\Log\LoggerInterface
 	 */
 	private function getLogger(): LoggerInterface {
-		if ($this->logger == null) {
+		if (!isset($this->logger)) {
 			$this->logger = new NullLogger();
 		}
 		return $this->logger;
@@ -428,7 +428,7 @@ abstract class MicropubAdapter {
 		$accessTokenResult = $this->verifyAccessTokenCallback($accessToken);
 		if ($accessTokenResult instanceof ResponseInterface) {
 			return $accessTokenResult; // Short-circuit.
-		} elseif ($accessTokenResult) {
+		} elseif (is_array($accessTokenResult)) {
 			// Log success.
 			$logger->info('Access token verified successfully.', ['user' => $accessTokenResult]);
 			$this->user = $accessTokenResult;
@@ -449,7 +449,7 @@ abstract class MicropubAdapter {
 		if (strtolower($request->getMethod()) == 'get') {
 			$queryParams = $request->getQueryParams();
 
-			if (array_key_exists('q', $queryParams)) {
+			if (isset($queryParams['q']) and is_string($queryParams['q'])) {
 				$q = $queryParams['q'];
 				if ($q == 'config') {
 					// Handle configuration query.
@@ -460,16 +460,16 @@ abstract class MicropubAdapter {
 					$logger->info('Handling source query', $queryParams);
 
 					// Normalize properties([]) paramter.
-					if (array_key_exists('properties[]', $queryParams)) {
+					if (isset($queryParams['properties[]']) and is_array($queryParams['properties[]'])) {
 						$sourceProperties = $queryParams['properties[]'];
-					} elseif (array_key_exists('properties', $queryParams)) {
+					} elseif (isset($queryParams['properties']) and is_string($queryParams['properties'])) {
 						$sourceProperties = [$queryParams['properties']];
 					} else {
 						$sourceProperties = null;
 					}
 
 					// Check for a url parameter.
-					if (!array_key_exists('url', $queryParams)) {
+					if (!isset($queryParams['url'])) {
 						$logger->error($this->errorMessages['missing_url_parameter']);
 						return $this->toResponse(json_encode([
 							'error' => 'invalid_request',
@@ -526,12 +526,12 @@ abstract class MicropubAdapter {
 			}
 			
 			// Check for action.
-			if (array_key_exists('action', $parsedBody)) {
+			if (isset($parsedBody['action']) and is_string($parsedBody['action'])) {
 				$action = $parsedBody['action'];
 				if ($action == 'delete') {
 					// Handle delete request.
 					$logger->info('Handling delete request.', $parsedBody);
-					if (array_key_exists('url', $parsedBody)) {
+					if (isset($parsedBody['url']) and is_string($parsedBody['url'])) {
 						$deleteResult = $this->deleteCallback($parsedBody['url']);
 						if ($deleteResult === true) {
 							// If the delete was successful, respond with an empty 204 response.
@@ -549,7 +549,7 @@ abstract class MicropubAdapter {
 					
 				} elseif ($action == 'undelete') {
 					// Handle undelete request.
-					if (array_key_exists('url', $parsedBody)) {
+					if (isset($parsedBody['url']) and is_string($parsedBody['url'])) {
 						$undeleteResult = $this->undeleteCallback($parsedBody['url']);
 						if ($undeleteResult === true) {
 							// If the delete was successful, respond with an empty 204 response.
@@ -571,7 +571,7 @@ abstract class MicropubAdapter {
 				} elseif ($action == 'update') {
 					// Handle update request.
 					// Check for the required url parameter.
-					if (!array_key_exists('url', $parsedBody)) {
+					if (!isset($parsedBody['url']) or !is_string($parsedBody['url'])) {
 						return new Response(400, ['content-type' => 'application/json'], json_encode([
 							'error' => 'invalid_request',
 							'error_description' => $this->errorMessages['missing_url_parameter']
@@ -648,7 +648,7 @@ abstract class MicropubAdapter {
 		$accessTokenResult = $this->verifyAccessTokenCallback($accessToken);
 		if ($accessTokenResult instanceof ResponseInterface) {
 			return $accessTokenResult; // Short-circuit.
-		} elseif ($accessTokenResult) {
+		} elseif (is_array($accessTokenResult)) {
 			// Log success.
 			$logger->info('Access token verified successfully.', ['user' => $accessTokenResult]);
 			$this->user = $accessTokenResult;
@@ -675,8 +675,9 @@ abstract class MicropubAdapter {
 		}
 
 		// Look for the presence of an uploaded file called 'file'
-		if (array_key_exists('file', $request->getUploadedFiles())) {
-			$mediaCallbackResult = $this->mediaEndpointCallback($request->getUploadedFiles()['file']);
+		$uploadedFiles = $request->getUploadedFiles();
+		if (isset($uploadedFiles['file']) and $uploadedFiles['file'] instanceof UploadedFileInterface) {
+			$mediaCallbackResult = $this->mediaEndpointCallback($uploadedFiles['file']);
 
 			if ($mediaCallbackResult) {
 				if (is_string($mediaCallbackResult) and !in_array($mediaCallbackResult, MICROPUB_ERROR_CODES)) {
@@ -700,11 +701,11 @@ abstract class MicropubAdapter {
 	 * ResponseInterface. Existing ResponseInterfaces are passed through
 	 * without alteration.
 	 * 
-	 * @param string|array|ResponseInterface $resultOrResponse
+	 * @param null|string|array|ResponseInterface $resultOrResponse
 	 * @param int $status=200
 	 * @return ResponseInterface
 	 */
-	private function toResponse($resultOrResponse, $status=200) {
+	private function toResponse($resultOrResponse, int $status=200): ResponseInterface {
 		if ($resultOrResponse instanceof ResponseInterface) {
 			return $resultOrResponse;
 		}

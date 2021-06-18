@@ -6,3 +6,4 @@ The easiest way to add micropub support to existing or new applications… or at
 
 * [API Documentation](https://taproot.github.io/micropub-adapter/)
 * [Code Coverage](https://taproot.github.io/micropub-adapter/coverage/)
+* [micropub.rocks implementation report](https://micropub.rocks/implementation-reports/servers/580/D3vyg58QCHfWI4TavNiT)

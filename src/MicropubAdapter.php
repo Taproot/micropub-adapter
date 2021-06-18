@@ -460,8 +460,8 @@ abstract class MicropubAdapter {
 					$logger->info('Handling source query', $queryParams);
 
 					// Normalize properties([]) paramter.
-					if (isset($queryParams['properties[]']) and is_array($queryParams['properties[]'])) {
-						$sourceProperties = $queryParams['properties[]'];
+					if (isset($queryParams['properties']) and is_array($queryParams['properties'])) {
+						$sourceProperties = $queryParams['properties'];
 					} elseif (isset($queryParams['properties']) and is_string($queryParams['properties'])) {
 						$sourceProperties = [$queryParams['properties']];
 					} else {
@@ -499,8 +499,8 @@ abstract class MicropubAdapter {
 							'syndicate-to' => $configQueryResult['syndicate-to']
 						]));
 					} else {
-						// We don’t have anything to return, so return an empty object.
-						return new Response(200, ['content-type' => 'application/json'], '{}');
+						// We don’t have anything to return, so return an empty result.
+						return new Response(200, ['content-type' => 'application/json'], '{"syndicate-to": []}');
 					}
 				}
 			}
@@ -524,6 +524,9 @@ abstract class MicropubAdapter {
 			if (!is_array($parsedBody)) {
 				return $this->toResponse('invalid_request');
 			}
+
+			// Prevent the access_token from being stored.
+			unset($parsedBody['access_token']);
 			
 			// Check for action.
 			if (isset($parsedBody['action']) and is_string($parsedBody['action'])) {
@@ -782,7 +785,7 @@ function normalizeUrlencodedCreateRequest(array $body) {
 		if ($key == 'h') {
 			$result['type'] = ["h-$value"];
 		} elseif (is_array($value)) {
-			$result['properties'][rtrim($key, '[]')] = $value;
+			$result['properties'][$key] = $value;
 		} else {
 			$result['properties'][$key] = [$value];
 		}

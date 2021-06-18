@@ -216,7 +216,7 @@ final class MicropubAdapterTest extends TestCase {
 		$r = $mp->handleRequest($this->makeRequest('GET')->withQueryParams([
 			'q' => 'source',
 			'url' => 'https://example.com/post',
-			'properties[]' => ['name', 'url']
+			'properties' => ['name', 'url']
 		]));
 
 		$this->assertEquals(200, $r->getStatusCode());
@@ -537,7 +537,7 @@ final class MicropubAdapterTest extends TestCase {
 
 		$r = $mp->handleRequest($this->makeRequest()->withParsedBody([
 			'content' => 'Hello world!',
-			'category[]' => ['category1', 'category2']
+			'category' => ['category1', 'category2']
 		])->withUploadedFiles(['photo' => 'DUMMY_UPLOADED_FILE']));
 		
 		$this->assertEquals(201, $r->getStatusCode());

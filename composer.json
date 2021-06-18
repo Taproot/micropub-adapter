@@ -32,6 +32,7 @@
         "nyholm/psr7-server": "dev-master",
         "vimeo/psalm": "4.x-dev",
         "taproot/indieauth": "dev-main",
-        "guzzlehttp/guzzle": "7.4.x-dev"
+        "guzzlehttp/guzzle": "7.4.x-dev",
+        "monolog/monolog": "2.x-dev"
     }
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7968d280cc74ef6f5800fe7f1b0487b9",
+    "content-hash": "21428e46f3172416ee82be9471778309",
     "packages": [
         {
             "name": "nyholm/psr7",
@@ -1452,6 +1452,103 @@
             "time": "2018-08-24T14:47:04+00:00"
         },
         {
+            "name": "monolog/monolog",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Seldaek/monolog.git",
+                "reference": "5c9d9bf43e3328c7d38e14ae8e53782967109984"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/5c9d9bf43e3328c7d38e14ae8e53782967109984",
+                "reference": "5c9d9bf43e3328c7d38e14ae8e53782967109984",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2",
+                "psr/log": "^1.0.1"
+            },
+            "provide": {
+                "psr/log-implementation": "1.0.0"
+            },
+            "require-dev": {
+                "aws/aws-sdk-php": "^2.4.9 || ^3.0",
+                "doctrine/couchdb": "~1.0@dev",
+                "elasticsearch/elasticsearch": "^7",
+                "graylog2/gelf-php": "^1.4.2",
+                "mongodb/mongodb": "^1.8",
+                "php-amqplib/php-amqplib": "~2.4",
+                "php-console/php-console": "^3.1.3",
+                "phpspec/prophecy": "^1.6.1",
+                "phpstan/phpstan": "^0.12.59",
+                "phpunit/phpunit": "^8.5",
+                "predis/predis": "^1.1",
+                "rollbar/rollbar": "^1.3",
+                "ruflin/elastica": ">=0.90 <7.0.1",
+                "swiftmailer/swiftmailer": "^5.3|^6.0"
+            },
+            "suggest": {
+                "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
+                "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
+                "elasticsearch/elasticsearch": "Allow sending log messages to an Elasticsearch server via official client",
+                "ext-amqp": "Allow sending log messages to an AMQP server (1.0+ required)",
+                "ext-mbstring": "Allow to work properly with unicode symbols",
+                "ext-mongodb": "Allow sending log messages to a MongoDB server (via driver)",
+                "graylog2/gelf-php": "Allow sending log messages to a GrayLog2 server",
+                "mongodb/mongodb": "Allow sending log messages to a MongoDB server (via library)",
+                "php-amqplib/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib",
+                "php-console/php-console": "Allow sending log messages to Google Chrome",
+                "rollbar/rollbar": "Allow sending log messages to Rollbar",
+                "ruflin/elastica": "Allow sending log messages to an Elastic Search server"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-main": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Monolog\\": "src/Monolog"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be",
+                    "homepage": "https://seld.be"
+                }
+            ],
+            "description": "Sends your logs to files, sockets, inboxes, databases and various web services",
+            "homepage": "https://github.com/Seldaek/monolog",
+            "keywords": [
+                "log",
+                "logging",
+                "psr-3"
+            ],
+            "support": {
+                "issues": "https://github.com/Seldaek/monolog/issues",
+                "source": "https://github.com/Seldaek/monolog/tree/main"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/Seldaek",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/monolog/monolog",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-05-28T08:33:21+00:00"
+        },
+        {
             "name": "myclabs/deep-copy",
             "version": "1.x-dev",
             "source": {
@@ -2176,12 +2273,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "081c5cd98bdadad027415f1478f495c9fa5d4247"
+                "reference": "65501989b43de9fe36edc82df807223608737880"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/081c5cd98bdadad027415f1478f495c9fa5d4247",
-                "reference": "081c5cd98bdadad027415f1478f495c9fa5d4247",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/65501989b43de9fe36edc82df807223608737880",
+                "reference": "65501989b43de9fe36edc82df807223608737880",
                 "shasum": ""
             },
             "require": {
@@ -2245,7 +2342,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-06-05T04:18:13+00:00"
+            "time": "2021-06-18T06:29:39+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -2495,12 +2592,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "dc2af669678440c640b39285b66fed04af65922c"
+                "reference": "4cadc6ac51fe7607468a220bea91372415fed5c8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/dc2af669678440c640b39285b66fed04af65922c",
-                "reference": "dc2af669678440c640b39285b66fed04af65922c",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/4cadc6ac51fe7607468a220bea91372415fed5c8",
+                "reference": "4cadc6ac51fe7607468a220bea91372415fed5c8",
                 "shasum": ""
             },
             "require": {
@@ -2590,7 +2687,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-06-15T12:49:31+00:00"
+            "time": "2021-06-18T06:24:54+00:00"
         },
         {
             "name": "psr/container",
@@ -3727,12 +3824,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/type.git",
-                "reference": "b8cd8a1c753c90bc1a0f5372170e3e489136f914"
+                "reference": "f24cbc541026c3bb7d27c647f0f9ea337135b22a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/type/zipball/b8cd8a1c753c90bc1a0f5372170e3e489136f914",
-                "reference": "b8cd8a1c753c90bc1a0f5372170e3e489136f914",
+                "url": "https://api.github.com/repos/sebastianbergmann/type/zipball/f24cbc541026c3bb7d27c647f0f9ea337135b22a",
+                "reference": "f24cbc541026c3bb7d27c647f0f9ea337135b22a",
                 "shasum": ""
             },
             "require": {
@@ -3775,7 +3872,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-06-15T12:49:02+00:00"
+            "time": "2021-06-18T06:28:45+00:00"
         },
         {
             "name": "sebastian/version",
@@ -4753,12 +4850,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Taproot/indieauth.git",
-                "reference": "ce541c360792bb5df2fb8c3f52a768227a2e742b"
+                "reference": "d6594beebe46947e13f128d7133eb9cdba68ad88"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Taproot/indieauth/zipball/ce541c360792bb5df2fb8c3f52a768227a2e742b",
-                "reference": "ce541c360792bb5df2fb8c3f52a768227a2e742b",
+                "url": "https://api.github.com/repos/Taproot/indieauth/zipball/d6594beebe46947e13f128d7133eb9cdba68ad88",
+                "reference": "d6594beebe46947e13f128d7133eb9cdba68ad88",
                 "shasum": ""
             },
             "require": {
@@ -4803,7 +4900,7 @@
                 "issues": "https://github.com/Taproot/indieauth/issues",
                 "source": "https://github.com/Taproot/indieauth/tree/main"
             },
-            "time": "2021-06-16T21:41:51+00:00"
+            "time": "2021-06-18T14:44:10+00:00"
         },
         {
             "name": "theseer/tokenizer",
@@ -4861,12 +4958,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/vimeo/psalm.git",
-                "reference": "b1b1072f41085c9f191a10c23e5de33f635f0dbc"
+                "reference": "d4311e30869250b6f4e707189ab48dc611d9a364"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vimeo/psalm/zipball/b1b1072f41085c9f191a10c23e5de33f635f0dbc",
-                "reference": "b1b1072f41085c9f191a10c23e5de33f635f0dbc",
+                "url": "https://api.github.com/repos/vimeo/psalm/zipball/d4311e30869250b6f4e707189ab48dc611d9a364",
+                "reference": "d4311e30869250b6f4e707189ab48dc611d9a364",
                 "shasum": ""
             },
             "require": {
@@ -4959,7 +5056,7 @@
                 "issues": "https://github.com/vimeo/psalm/issues",
                 "source": "https://github.com/vimeo/psalm/tree/master"
             },
-            "time": "2021-06-16T15:53:45+00:00"
+            "time": "2021-06-18T12:51:39+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -5079,7 +5176,8 @@
         "nyholm/psr7-server": 20,
         "vimeo/psalm": 20,
         "taproot/indieauth": 20,
-        "guzzlehttp/guzzle": 20
+        "guzzlehttp/guzzle": 20,
+        "monolog/monolog": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

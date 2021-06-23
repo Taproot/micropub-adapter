@@ -4,55 +4,68 @@ namespace Taproot\Micropub\Example;
 
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
-use Slim\Interfaces\RouteCollectorProxyInterface;
 use Taproot\IndieAuth;
-use Webmozart\PathUtil\Path;
 
 require __DIR__ . '/../../vendor/autoload.php';
-
-$app = AppFactory::create();
 
 /** @var array $config */
 $config = json_decode(file_get_contents(__DIR__.'/../data/config.json'), true);
 
+$app = AppFactory::create();
+
+// Ensure that the folders used by the app exist.
 @mkdir($config['uploaded_file_path']);
 @mkdir(__DIR__.'/../data/posts/');
 
+// Set up a logger which we’ll use for everything.
 $logger = new Logger('Micropub Example');
 $logger->pushHandler(new RotatingFileHandler(__DIR__.'/../logs/micropub.log', 1));
 
 // TODO: delete any posts older than a day.
 
+// Set up an indieauth server.
 $indieauthServer = new IndieAuth\Server([
+	// Use the secret defined in the config file. Must be ≥64 chars long.
 	'secret' => $config['secret'],
+
+	// Store tokens in the file system.
 	'tokenStorage' => __DIR__.'/../data/tokens/',
+
+	// Use the simple single user password-based authentication handler bundled with the IndieAuth
+	// library for authentication. Pass it our secret, our user data, and the password we’ll
+	// log in with, hashed with password_hash().
 	'authenticationHandler' => new IndieAuth\Callback\SingleUserPasswordAuthenticationCallback(
 		$config['secret'],
 		$config['user_profile'],
 		$config['user_password']
 	),
+
 	// I’m disabling PKCE because the micropub.rocks test suite doesn’t support it yet. 
 	// PKCE is required by default, and should only be made optional for back-compatibility.
 	'requirePKCE' => false,
+	
+	// Log internal IndieAuth stuff for debugging purposes.
 	'logger' => $logger
 ]);
 
+// Make an instance of our Micropub Adapter, which requires access to the indieauth
+// server, and information in the config array.
 $micropubAdapter = new ExampleMicropubAdapter($indieauthServer, $config);
 
 // Add IndieAuth endpoints.
 $app->any('/indieauth/authorization', function (Request $request, Response $response) use ($indieauthServer, $logger) {
 	return $indieauthServer->handleAuthorizationEndpointRequest($request);
-})->setName('indieauth.server.authorization_endpoint');
+});
 
 $app->any('/indieauth/token', function (Request $request, Response $response) use ($indieauthServer) {
 	return $indieauthServer->handleTokenEndpointRequest($request);
-})->setName('indieauth.server.token_endpoint');
+});
 
-// Index
+// Set up the index page, a very minimalist body with all the required indieauth+micropub links
+// in headers.
 $app->get('/', function (Request $request, Response $response) {
 	$response->getBody()->write('MicropubAdapter demo site.');
 
@@ -66,17 +79,17 @@ $app->get('/', function (Request $request, Response $response) {
 	return $response;
 });
 
-// Micropub Endpoint
+// Micropub Endpoint, handled by our adapter.
 $app->any('/micropub', function (Request $request, Response $response) use ($micropubAdapter) { 
 	return $micropubAdapter->handleRequest($request);
 });
 
-// Micropub Media Endpoint
+// Micropub Media Endpoint, handled by our adapter.
 $app->any('/media-endpoint', function (Request $request, Response $response) use ($micropubAdapter) {
 	return $micropubAdapter->handleMediaEndpointRequest($request);
 });
 
-// h-entry endpoint
+// Endpoint for viewing individual posts.
 $app->get('/posts/{postId}', function (Request $request, Response $response, array $args) use ($logger, $micropubAdapter) {
 	$entryId = $args['postId'];
 
@@ -102,4 +115,5 @@ $app->get('/posts/{postId}', function (Request $request, Response $response, arr
 	return $response->withAddedHeader('Content-type', 'text/html');
 });
 
+// Now that the app is set up, handle the current request.
 $app->run();

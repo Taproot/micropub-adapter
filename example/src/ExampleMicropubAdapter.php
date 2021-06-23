@@ -11,11 +11,23 @@ use Taproot\Micropub\MicropubAdapter;
 use Taproot\IndieAuth;
 use Webmozart\PathUtil\Path;
 
+/**
+ * Example Micropub Adapter
+ * 
+ * An example of how to subclass MicropubAdapter to make a fully functional micropub
+ * endpoint.
+ */
 class ExampleMicropubAdapter extends MicropubAdapter {
 	protected IndieAuth\Server $indieAuthServer;
 
 	protected array $config;
 
+	/**
+	 * Constructor
+	 * 
+	 * Subclasses will need a way of validating access tokens. In this case, that’s provided
+	 * by passing in the instance of Taproot\IndieAuth\Server used to handle authentication.
+	 */
 	public function __construct(IndieAuth\Server $indieAuthServer, array $config, ?LoggerInterface $logger=null) {
 		$this->indieAuthServer = $indieAuthServer;
 		$this->config = $config;
@@ -23,8 +35,10 @@ class ExampleMicropubAdapter extends MicropubAdapter {
 	}
 
 	public function verifyAccessTokenCallback(string $token) {
+		// If the provided access token refers to a valid access token, return the user
+		// data, which will be available on $this->user for other callbacks to refer to.
 		if ($userData = $this->indieAuthServer->getTokenStorage()->getAccessToken($token)) {
-			// Convert scope data into an array, for convenience.
+			// Convert space-separated string scope data into an array, for convenience.
 			$userData['scope'] = explode(' ', $userData['scope'] ?? '');
 			return $userData;
 		}
@@ -44,6 +58,7 @@ class ExampleMicropubAdapter extends MicropubAdapter {
 		$data['properties']['published'] = [$dtCreated->format('c')];
 		$data['properties']['author'] = [$this->user['me']];
 
+		// As this is a simple example, we’re taking the lazy approach and making a UUID for each post.
 		$postId = uniqid();
 		$postUrl = (string) $this->request->getUri()->withFragment('')->withQuery('')->withPath("/posts/$postId");
 		$data['properties']['url'] = [$postUrl];
@@ -51,6 +66,8 @@ class ExampleMicropubAdapter extends MicropubAdapter {
 
 		// Handle any uploaded files.
 		foreach ($uploadedFiles as $fileProp => $files) {
+			// $files can either be an instance of UploadedFileInterface, or an array of the same, if
+			// multiple files were uploaded under the same key.
 			if (!is_array($files)) {
 				$files = [$files];
 			}
@@ -309,7 +326,8 @@ class ExampleMicropubAdapter extends MicropubAdapter {
 		return (string) $this->request->getUri()->withQuery('')->withFragment('')->withPath($fileUrl);
 	}
 
-	// Some internal methods.
+	// Some internal methods which are not part of the micropub handling interface, but
+	// which are useful both internally and by other routes.
 
 	public function getPostById(string $id) {
 		$entryFilename = "$id.json";

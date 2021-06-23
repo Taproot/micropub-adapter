@@ -1,0 +1,10 @@
+{
+	"secret": "a random secret string of at least 64 characters",
+	"user_profile": {
+		"me": "https://me.example.com/"
+	},
+	"user_password": "The password used to log in to the app, hashed with password_hash()",
+	"uploaded_file_path": "the path to store uploaded files at, e.g. /path/to/public_html/uploads/",
+	"uploaded_file_url": "the relative URL path to uploads, e.g. /uploads",
+	"timezone": "A DateTimeZone-compatible timezone identifier, e.g. Europe/London"
+}

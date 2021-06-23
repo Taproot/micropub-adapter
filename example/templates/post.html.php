@@ -2,7 +2,7 @@
 
 use BarnabyWalters\Mf2 as M;
 
-/** @var array $post */
+/** @var array $post The post to display, structured as a microformats2 canonical JSON array, with some additional internal top-level properties. */
 
 ?>
 <!DOCTYPE html>

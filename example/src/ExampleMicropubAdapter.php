@@ -18,9 +18,11 @@ use Webmozart\PathUtil\Path;
  * endpoint.
  */
 class ExampleMicropubAdapter extends MicropubAdapter {
-	protected IndieAuth\Server $indieAuthServer;
+	/** @var IndieAuth\Server $indieAuthServer */
+	protected $indieAuthServer;
 
-	protected array $config;
+	/** @var array $config */
+	protected $config;
 
 	/**
 	 * Constructor

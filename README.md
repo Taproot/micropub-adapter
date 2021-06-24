@@ -12,6 +12,8 @@ taproot/micropub-adapter is a simple and flexible way to add [Micropub](https://
 
 ## Installation
 
+taproot/micropub-adapter is currently tested against and compatible with PHP 7.3, 7.4, and 8.0.
+
 Install taproot/micropub-adapter using [composer](https://getcomposer.org/):
 
     composer.phar require taproot/micropub-adapter

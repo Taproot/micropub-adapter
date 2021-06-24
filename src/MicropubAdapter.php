@@ -87,7 +87,7 @@ abstract class MicropubAdapter {
 	/**
 	 * @var null|LoggerInterface $logger The logger used by MicropubAdaptor for internal logging.
 	 */
-	public ?LoggerInterface $logger;
+	public $logger;
 
 	/**
 	 * @var string[] $errorMessages An array mapping micropub and adapter-specific error codes to human-friendly descriptions.

@@ -34,5 +34,8 @@
         "taproot/indieauth": "dev-main",
         "guzzlehttp/guzzle": "7.4.x-dev",
         "monolog/monolog": "2.x-dev"
+    },
+    "suggest": {
+        "taproot/indieauth": "An IndieAuth implementation built for use with taproot/micropub-adapter."
     }
 }

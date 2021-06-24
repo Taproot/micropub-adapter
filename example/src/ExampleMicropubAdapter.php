@@ -145,16 +145,10 @@ class ExampleMicropubAdapter extends MicropubAdapter {
 		}
 
 		// At this point, we finally have a valid post which we can update.
-		if (isset($actions['replace']) and !is_array($actions['replace'])) {
-			return 'invalid_request';
-		}
 		foreach ($actions['replace'] ?? [] as $propName => $newVal) {
 			$postData['properties'][$propName] = $newVal;
 		}
 
-		if (isset($actions['add']) and !is_array($actions['add'])) {
-			return 'invalid_request';
-		}
 		foreach ($actions['add'] ?? [] as $propName => $newVal) {
 			if (!isset($postData['properties'][$propName])) {
 				$postData['properties'][$propName] = [];
@@ -162,9 +156,6 @@ class ExampleMicropubAdapter extends MicropubAdapter {
 			$postData['properties'][$propName] = array_merge($postData['properties'][$propName], $newVal);
 		}
 
-		if (isset($actions['delete']) and !is_array($actions['delete'])) {
-			return 'invalid_request';
-		}
 		foreach ($actions['delete'] ?? [] as $key => $val) {
 			if (is_string($key)) {
 				// We’re deleting specific values from a multi-value property.

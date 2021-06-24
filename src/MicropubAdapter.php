@@ -267,7 +267,7 @@ abstract class MicropubAdapter {
 	 * * If the post exists and can be undeleted, do so. Return true for success, or a URL if the
 	 *   undeletion caused the post’s URL to change.
 	 * 
-	 * @param string $url The URL of the post to be deleted.
+	 * @param string $url The URL of the post to be undeleted.
 	 * @return string|true|array|ResponseInterface true on basic success, otherwise either an error string, or a URL if the undeletion caused the post’s location to change.
 	 * @link https://micropub.spec.indieweb.org/#delete
 	 * @api
@@ -311,7 +311,7 @@ abstract class MicropubAdapter {
 	 * Create Callback
 	 * 
 	 * Handles a create request. JSON parameters are left unchanged, urlencoded
-	 * form parameters are normalized into canonical JSON form.
+	 * form parameters are normalized into canonical microformats-2 JSON form.
 	 *
 	 * * If the current access token scope doesn’t permit updates, return either
 	 *   `'insufficient_scope'`, an array with `'error'` and `'error_description'`
@@ -323,7 +323,7 @@ abstract class MicropubAdapter {
 	 *   a HTTP 201 success response, or your own ResponseInterface.
 	 * 
 	 * @param array $data The data to create a post with in canonical MF2 structure
-	 * @param array $uploadedFiles an associative array mapping property names to UploadedFileInterface objects
+	 * @param array $uploadedFiles an associative array mapping property names to UploadedFileInterface objects, or arrays thereof
 	 * @return string|array|ResponseInterface A URL on success, a micropub error code, an array to be returned as JSON response, or a ready-made ResponseInterface
 	 * @link https://micropub.spec.indieweb.org/#create
 	 * @api
@@ -392,7 +392,7 @@ abstract class MicropubAdapter {
 	 * 
 	 * @return \Psr\Log\LoggerInterface
 	 */
-	private function getLogger(): LoggerInterface {
+	protected function getLogger(): LoggerInterface {
 		if (!isset($this->logger)) {
 			$this->logger = new NullLogger();
 		}
@@ -468,8 +468,8 @@ abstract class MicropubAdapter {
 						$sourceProperties = null;
 					}
 
-					// Check for a url parameter.
-					if (!isset($queryParams['url'])) {
+					// Check for a valid (string) url parameter.
+					if (!isset($queryParams['url']) or !is_string($queryParams['url'])) {
 						$logger->error($this->errorMessages['missing_url_parameter']);
 						return $this->toResponse(json_encode([
 							'error' => 'invalid_request',
@@ -493,7 +493,8 @@ abstract class MicropubAdapter {
 					$logger->info('Handling syndicate-to query.', $queryParams);
 					$configQueryResult = $this->configurationQueryCallback($queryParams);
 					if ($configQueryResult instanceof ResponseInterface) {
-						return $configQueryResult; // Short-circuit, assume that the response from q=config will suffice for q=syndicate-to.
+						// Short-circuit, assume that the response from q=config will suffice for q=syndicate-to.
+						return $configQueryResult;
 					} elseif (is_array($configQueryResult) and array_key_exists('syndicate-to', $configQueryResult)) {
 						return new Response(200, ['content-type' => 'application/json'], json_encode([
 							'syndicate-to' => $configQueryResult['syndicate-to']
@@ -575,10 +576,19 @@ abstract class MicropubAdapter {
 					// Handle update request.
 					// Check for the required url parameter.
 					if (!isset($parsedBody['url']) or !is_string($parsedBody['url'])) {
+						$logger->warning("An update request had a missing or invalid url parameter.");
 						return new Response(400, ['content-type' => 'application/json'], json_encode([
 							'error' => 'invalid_request',
 							'error_description' => $this->errorMessages['missing_url_parameter']
 						]));
+					}
+
+					// Check that the three possible update action parameters are all arrays.
+					foreach (['replace', 'add', 'delete'] as $updateAction) {
+						if (isset($parsedBody[$updateAction]) and !is_array($parsedBody[$updateAction])) {
+							$logger->warning("An update request had an invalid (non-array) $updateAction", [$updateAction => $parsedBody[$updateAction]]);
+							return $this->toResponse('invalid_request');
+						}
 					}
 					
 					$updateResult = $this->updateCallback($parsedBody['url'], $parsedBody);

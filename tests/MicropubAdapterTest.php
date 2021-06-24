@@ -447,6 +447,22 @@ final class MicropubAdapterTest extends TestCase {
 		$this->assertEquals(400, $r->getStatusCode());
 	}
 
+	public function testReturnsErrorOnUpdateRequestWithNonArrayActions() {
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken(),
+			'updateCallback' => function ($url, $actions) { $this->fail('Update requests with non-array action parameters should not call updateCallback().'); }
+		]);
+
+		foreach (['replace', 'add', 'delete'] as $action) {
+			$r = $mp->handleRequest($this->makeJsonRequest([
+				'action' => 'update',
+				'url' => 'https://example.com/posts/1',
+				$action => 'not an array'
+			]));
+			$this->assertEquals(400, $r->getStatusCode());
+		}
+	}
+
 	public function testSuccessfulUpdate() {
 		$url = 'https://example.com/post';
 		$updates = ['replace' => ['content' => 'test']];

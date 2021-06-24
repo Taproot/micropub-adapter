@@ -17,13 +17,13 @@ taproot/micropub-adapter is currently tested against and compatible with PHP 7.3
 Install taproot/micropub-adapter using [composer](https://getcomposer.org/):
 
     composer.phar require taproot/micropub-adapter
-		composer.phar install (or composer.phar update)
+    composer.phar install (or composer.phar update)
 
 Versioned releases are GPG signed so you can verify that the code hasn’t been tampered with.
 
     gpg --recv-keys 1C00430B19C6B426922FE534BEF8CE58118AD524
-		cd vendor/taproot/micropub-adapter
-		git tag -v v0.1.0 # Replace with the version you have installed
+    cd vendor/taproot/micropub-adapter
+    git tag -v v0.1.0 # Replace with the version you have installed
 
 ## Usage
 

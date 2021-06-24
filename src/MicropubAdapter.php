@@ -769,7 +769,7 @@ function getAccessToken(ServerRequestInterface $request) {
 	}
 	
 	$parsedBody = $request->getParsedBody();
-	if (is_array($parsedBody) && array_key_exists('access_token', $parsedBody)) {
+	if (is_array($parsedBody) and array_key_exists('access_token', $parsedBody) and is_string($parsedBody['access_token'])) {
 		return $parsedBody['access_token'];
 	}
 

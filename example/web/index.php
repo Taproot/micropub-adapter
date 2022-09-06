@@ -56,12 +56,34 @@ $indieauthServer = new IndieAuth\Server([
 $micropubAdapter = new ExampleMicropubAdapter($indieauthServer, $config);
 
 // Add IndieAuth endpoints.
+// The authorization endpoint presents the user with a login and app authorization flow UI,
+// redirecting the user back to the client app with an auth code.
 $app->any('/indieauth/authorization', function (Request $request, Response $response) use ($indieauthServer, $logger) {
 	return $indieauthServer->handleAuthorizationEndpointRequest($request);
 });
 
+// The token endpoint is used by the client app to exchange an auth code for an access token,
+// which it then uses to authenticate micropub requests.
 $app->any('/indieauth/token', function (Request $request, Response $response) use ($indieauthServer) {
 	return $indieauthServer->handleTokenEndpointRequest($request);
+});
+
+// Set up an indieauth metadata endpoint
+// https://indieauth.spec.indieweb.org/#discovery-by-clients
+$app->get('/indieauth/metadata', function (Request $request, Response $response) {
+	$baseUrl = $request->getUri()->withPath('/')->withQuery('')->withFragment('');
+	$response->getBody()->write(json_encode([
+		// Required
+		'issuer' => $baseUrl,
+		'authorization_endpoint' => $baseUrl->withPath('indieauth/authorization'),
+		'token_endpoint' => $baseUrl->withPath('indieauth/token'),
+		'code_challenge_methods_supported' => ['S256'],
+		// Optional
+		'scopes_supported' => ['profile', 'create', 'delete', 'undelete', 'update'],
+		'service_documentation' => 'https://github.com/Taproot/indieauth'
+	]));
+	$response = $response->withAddedHeader('Content-type', 'application/json');
+	return $response;
 });
 
 // Set up the index page, a very minimalist body with all the required indieauth+micropub links
@@ -73,8 +95,10 @@ $app->get('/', function (Request $request, Response $response) {
 
 	$response = $response->withAddedHeader('Link', [
 		"<{$baseUrl->withPath('micropub')}>; rel=\"micropub\"",
+		"<{$baseUrl->withPath('indieauth/metadata')}>; rel=\"indieauth-metadata\"",
+		// Provide individual endpoint rels for back-compatibility.
 		"<{$baseUrl->withPath('indieauth/authorization')}>; rel=\"authorization_endpoint\"",
-		"<{$baseUrl->withPath('indieauth/token')}>; rel=\"token_endpoint\"",
+		"<{$baseUrl->withPath('indieauth/token')}>; rel=\"token_endpoint\""
 	]);
 	return $response;
 });

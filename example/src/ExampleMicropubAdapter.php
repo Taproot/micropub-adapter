@@ -39,7 +39,7 @@ class ExampleMicropubAdapter extends MicropubAdapter {
 	public function verifyAccessTokenCallback(string $token) {
 		// If the provided access token refers to a valid access token, return the user
 		// data, which will be available on $this->user for other callbacks to refer to.
-		if ($userData = $this->indieAuthServer->getTokenStorage()->getAccessToken($token)) {
+		if ($userData = $this->indieAuthServer->getAccessToken($token)) {
 			// Convert space-separated string scope data into an array, for convenience.
 			$userData['scope'] = explode(' ', $userData['scope'] ?? '');
 			return $userData;

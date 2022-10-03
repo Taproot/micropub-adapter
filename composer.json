@@ -22,7 +22,7 @@
     },
     "require": {
         "psr/http-message": "^1.0",
-        "psr/log": "^1.1",
+        "psr/log": "^1.1||^2.0||3.0",
         "nyholm/psr7": "^1.4",
         "php": ">=7.3"
     },
@@ -33,7 +33,7 @@
         "vimeo/psalm": "^4.x-dev",
         "taproot/indieauth": "dev-main",
         "guzzlehttp/guzzle": "^7.4.x-dev||^2.0",
-        "monolog/monolog": "2.x-dev"
+        "monolog/monolog": "2.x-dev||^3.0"
     },
     "suggest": {
         "taproot/indieauth": "An IndieAuth implementation built for use with taproot/micropub-adapter."

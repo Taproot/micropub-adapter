@@ -5,13 +5,14 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
 
     strategy:
       matrix:
-        php: ['7.3', '7.4', '8.0']
+        php: ['7.3', '7.4', '8.0', '8.1']
 
     runs-on: ubuntu-latest
 

@@ -12,7 +12,7 @@ taproot/micropub-adapter is a simple and flexible way to add [Micropub](https://
 
 ## Installation
 
-taproot/micropub-adapter is currently tested against and compatible with PHP 7.3, 7.4, and 8.0.
+taproot/micropub-adapter is currently tested against and compatible with PHP 7.3, 7.4, 8.0 and 8.1.
 
 Install taproot/micropub-adapter using [composer](https://getcomposer.org/):
 
@@ -23,7 +23,7 @@ Versioned releases are GPG signed so you can verify that the code hasn’t been 
 
     gpg --recv-keys 1C00430B19C6B426922FE534BEF8CE58118AD524
     cd vendor/taproot/micropub-adapter
-    git tag -v v0.1.0 # Replace with the version you have installed
+    git tag -v v0.1.1 # Replace with the version you have installed
 
 ## Usage
 
@@ -84,4 +84,15 @@ If discussions lead to you wanting to submit a pull request, following this proc
 
 ## Changelog
 
-* v0.1.0 2021-06-24
+### v0.1.1
+2022-10-03
+
+* Updated example to use latest features from taproot/indieauth
+* Allowed use of psr/log v2 and v3
+* Allowed use of monolog v3 when testing
+* Added PHP 8.1 to the test matrix, enabled manual dispatch.
+
+### v0.1.0
+2021-06-24
+
+Initial release.

@@ -1,4 +1,5 @@
 {
+	"issuer": "your server’s issuer ID. Must be a https URL which is a prefix of your indieauth-metadata URL.",
 	"secret": "a random secret string of at least 64 characters",
 	"user_profile": {
 		"me": "https://me.example.com/"

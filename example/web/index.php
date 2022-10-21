@@ -28,6 +28,8 @@ $logger->pushHandler(new RotatingFileHandler(__DIR__.'/../logs/micropub.log', 1)
 
 // Set up an indieauth server.
 $indieauthServer = new IndieAuth\Server([
+	'issuer' => $config['issuer'],
+
 	// Use the secret defined in the config file. Must be ≥64 chars long.
 	'secret' => $config['secret'],
 
@@ -70,11 +72,11 @@ $app->any('/indieauth/token', function (Request $request, Response $response) us
 
 // Set up an indieauth metadata endpoint
 // https://indieauth.spec.indieweb.org/#discovery-by-clients
-$app->get('/indieauth/metadata', function (Request $request, Response $response) {
+$app->get('/indieauth/metadata', function (Request $request, Response $response) use ($config) {
 	$baseUrl = $request->getUri()->withPath('/')->withQuery('')->withFragment('');
 	$response->getBody()->write(json_encode([
 		// Required
-		'issuer' => $baseUrl,
+		'issuer' => $config['issuer'],
 		'authorization_endpoint' => $baseUrl->withPath('indieauth/authorization'),
 		'token_endpoint' => $baseUrl->withPath('indieauth/token'),
 		'code_challenge_methods_supported' => ['S256'],

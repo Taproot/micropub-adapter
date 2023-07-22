@@ -511,7 +511,7 @@ abstract class MicropubAdapter {
 			return $this->toResponse('invalid_request');
 		} elseif (strtolower($request->getMethod()) == 'post') {
 			$contentType = $request->getHeaderLine('content-type');
-			$jsonRequest = $contentType == 'application/json';
+			$jsonRequest = str_contains($contentType, 'application/json');
 			
 			// Get a parsed body sufficient to determine the nature of the request.
 			if ($jsonRequest) {

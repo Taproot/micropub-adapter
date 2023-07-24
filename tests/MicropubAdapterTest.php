@@ -290,6 +290,23 @@ final class MicropubAdapterTest extends TestCase {
 		$this->assertEquals(400, $r->getStatusCode());
 	}
 
+	public function testCorrectlyRecognizesAJsonFormatHeader() {
+		$mp = new MicropubAdapterMock([
+			'verifyAccessTokenCallback' => $this->makeAccessToken(),
+			'createCallback' => function ($d, $uf) { $this->fail('Did not parse JSON body.'); },
+			'updateCallback' => function ($u, $as) { return true; },
+		]);
+		$request = $this->makeJsonRequest([
+			'action' => 'update',
+			'url' => 'https://smol.blog/item/5',
+			'replace' => ['content' => ['test']],
+		])->withHeader('content-type', 'application/json;charset=utf8');
+
+		$r = $mp->handleRequest($request);
+
+		$this->assertEquals(204, $r->getStatusCode());
+	}
+
 	public function testReturnsInvalidResponseOnPostRequestWithoutParseableBody() {
 		$mp = new MicropubAdapterMock([
 			'verifyAccessTokenCallback' => $this->makeAccessToken()

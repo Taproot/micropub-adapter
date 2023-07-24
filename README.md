@@ -84,6 +84,10 @@ If discussions lead to you wanting to submit a pull request, following this proc
 
 ## Changelog
 
+### Future
+
+* Handle JSON requests correctly when there is more than one `content-type` header.
+
 ### v0.1.1
 2022-10-03
 

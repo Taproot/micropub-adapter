@@ -23,7 +23,7 @@ Versioned releases are GPG signed so you can verify that the code hasn’t been 
 
     gpg --recv-keys 1C00430B19C6B426922FE534BEF8CE58118AD524
     cd vendor/taproot/micropub-adapter
-    git tag -v v0.1.1 # Replace with the version you have installed
+    git tag -v v0.1.2 # Replace with the version you have installed
 
 ## Usage
 
@@ -84,9 +84,10 @@ If discussions lead to you wanting to submit a pull request, following this proc
 
 ## Changelog
 
-### Future
+### v0.1.2
+2023-07-24
 
-* Handle JSON requests correctly when there is more than one `content-type` header.
+* Handle JSON requests correctly when there is more than one `content-type` header — thanks @oddevan!
 
 ### v0.1.1
 2022-10-03

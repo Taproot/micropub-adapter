@@ -12,24 +12,24 @@ jobs:
 
     strategy:
       matrix:
-        php: ['7.3', '7.4', '8.0', '8.1']
+        php: ['7.3', '7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5']
 
     runs-on: ubuntu-latest
 
     steps:
-    - uses: shivammathur/setup-php@2.11.0
+    - uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php }}
         extensions: 'xdebug'
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v7
 
     - name: Validate composer.json and composer.lock
       run: composer validate --strict
 
     - name: Cache Composer packages
       id: composer-cache
-      uses: actions/cache@v2
+      uses: actions/cache@v6
       with:
         path: vendor
         key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
@@ -38,9 +38,14 @@ jobs:
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
+      env:
+        # PHP 7.3 can only install Slim versions that Composer 2.9+ blocks for known advisories (dev dependency only).
+        COMPOSER_NO_SECURITY_BLOCKING: 1
 
     - name: Run Test Suite
       run: XDEBUG_MODE=coverage ./vendor/bin/phpunit tests --coverage-filter src --coverage-text
     
+    # Psalm 4 aborts on PHP 8.4+ because the mf2/mf2 test dependency raises deprecations while loading.
     - name: Run Static Analysis
+      if: ${{ matrix.php != '8.4' && matrix.php != '8.5' }}
       run: ./vendor/bin/psalm

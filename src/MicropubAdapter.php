@@ -221,7 +221,7 @@ abstract class MicropubAdapter {
 	 * @link https://micropub.spec.indieweb.org/#source-content
 	 * @api
 	 */
-	public function sourceQueryCallback(string $url, array $properties = null) {
+	public function sourceQueryCallback(string $url, ?array $properties = null) {
 		// Default response: not implemented.
 		return $this->toResponse([
 			'error' => 'invalid_request',

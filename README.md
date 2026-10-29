@@ -12,7 +12,7 @@ taproot/micropub-adapter is a simple and flexible way to add [Micropub](https://
 
 ## Installation
 
-taproot/micropub-adapter is currently tested against and compatible with PHP 7.3, 7.4, 8.0 and 8.1.
+taproot/micropub-adapter is currently tested against and compatible with PHP 7.3, 7.4, 8.0, 8.1, 8.2, 8.3, 8.4 and 8.5.
 
 Install taproot/micropub-adapter using [composer](https://getcomposer.org/):
 
@@ -83,6 +83,11 @@ If discussions lead to you wanting to submit a pull request, following this proc
 * Push your changes and submit the PR.
 
 ## Changelog
+
+### Unreleased
+
+* Fixed the PHP 8.4 deprecation for the implicitly nullable `$properties` parameter of `sourceQueryCallback()`.
+* Added PHP 8.2, 8.3, 8.4 and 8.5 to the test matrix.
 
 ### v0.1.3
 2023-07-24

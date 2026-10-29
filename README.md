@@ -84,10 +84,13 @@ If discussions lead to you wanting to submit a pull request, following this proc
 
 ## Changelog
 
-### Unreleased
+### v0.1.4
+2026-10-29
 
 * Fixed the PHP 8.4 deprecation for the implicitly nullable `$properties` parameter of `sourceQueryCallback()`.
 * Added PHP 8.2, 8.3, 8.4 and 8.5 to the test matrix.
+
+Thanks to @svandragt for these patches!
 
 ### v0.1.3
 2023-07-24
